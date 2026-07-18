@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>트레센학원신안지부 스코어보드 · 메인</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+  :root{
+    --cream:#FFF8F1;
+    --pink:#FFD6E8;
+    --lavender:#E3D9FF;
+    --mint:#C9F5E2;
+    --gold:#FFC93C;
+    --silver:#D7DBE6;
+    --silver-deep:#AEB4C6;
+    --bronze:#E8B589;
+    --bronze-deep:#CE8A55;
+    --plum:#4A3358;
+    --plum-soft:#7A6690;
+    --white:#FFFFFF;
+    --shadow: 0 6px 18px rgba(122, 90, 143, 0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 10% 0%, #FFEAF3 0%, transparent 45%),
+      radial-gradient(circle at 90% 10%, #EDE6FF 0%, transparent 45%),
+      var(--cream);
+    font-family:'Noto Sans KR', sans-serif;
+    color:var(--plum);
+    min-height:100vh;
+    padding:0 0 60px 0;
+  }
+  .header{
+    position:relative;
+    background:linear-gradient(120deg, var(--pink) 0%, var(--lavender) 100%);
+    padding:34px 20px 42px; overflow:hidden; text-align:center;
+  }
+  .header::before{
+    content:""; position:absolute; inset:0;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0 12px, transparent 12px 26px);
+    opacity:0.5;
+  }
+  .header .eyebrow{
+    position:relative; font-family:'Gaegu', sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:2px; color:var(--plum); opacity:0.75; margin-bottom:6px;
+  }
+  .header h1{
+    position:relative; font-family:'Jua', sans-serif; font-size:clamp(26px, 4.5vw, 40px);
+    margin:0; color:var(--plum); text-shadow: 2px 2px 0 rgba(255,255,255,0.6); letter-spacing:1px;
+  }
+  .header .sub{
+    position:relative; margin-top:10px; font-size:14px; color:var(--plum-soft); font-weight:500;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .live-dot{ width:8px; height:8px; border-radius:50%; background:#E8517A; display:inline-block; animation:pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.35; transform:scale(0.7);} }
+  .track-edge{
+    position:absolute; left:0; right:0; bottom:0; height:14px;
+    background: repeating-linear-gradient(90deg, var(--white) 0 22px, transparent 22px 44px); opacity:0.8;
+  }
+
+  .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; }
+
+  .config-warning{
+    max-width:1100px; margin:16px auto 0; padding:14px 18px;
+    background:#FFF3CD; border:2px solid #F5C451; border-radius:14px;
+    color:#7A5A00; font-size:13px; line-height:1.6;
+  }
+  .config-warning code{ background:rgba(0,0,0,0.06); padding:1px 5px; border-radius:5px; }
+
+  .toolbar{
+    display:flex; justify-content:space-between; align-items:center; margin-top:-20px; margin-bottom:16px;
+    padding:12px 18px; background:var(--white); border-radius:16px; box-shadow:var(--shadow);
+    position:relative; flex-wrap:wrap; gap:8px;
+  }
+  .toolbar .count{ font-size:13px; color:var(--plum-soft); font-weight:700; }
+  .toolbar .sync-info{ font-size:12px; color:var(--plum-soft); font-weight:500; }
+
+  .empty{
+    text-align:center; padding:60px 20px; color:var(--plum-soft); background:var(--white);
+    border-radius:20px; box-shadow:var(--shadow);
+  }
+  .empty .icon{font-size:40px; margin-bottom:10px;}
+  .empty .msg{font-family:'Jua', sans-serif; font-size:17px; color:var(--plum);}
+  .empty .hint{font-size:13px; margin-top:6px;}
+
+  #lanes{ display:grid; grid-template-columns: 1fr; gap:10px; }
+  @media (min-width:720px){ #lanes{ grid-template-columns: 1fr 1fr; } }
+  @media (min-width:1080px){ #lanes{ grid-template-columns: 1fr 1fr 1fr; } }
+
+  .lane{
+    position:relative; background:var(--white); border-radius:16px; box-shadow:var(--shadow);
+    padding:13px 16px; display:flex; align-items:center; gap:11px; overflow:hidden;
+    border:2px solid transparent;
+    transition: transform .5s cubic-bezier(.4,0,.2,1), box-shadow .3s ease, border-color .3s ease;
+  }
+  .lane.rank-1{border-color:var(--gold); box-shadow:0 8px 20px rgba(245,166,35,0.28);}
+  .lane.rank-2{border-color:var(--silver-deep);}
+  .lane.rank-3{border-color:var(--bronze-deep);}
+  .lane.rank-mid{border-color:#8FC7FF;}
+
+  .lane-fill{
+    position:absolute; left:0; top:0; bottom:0; z-index:0;
+    background:linear-gradient(90deg, var(--mint), var(--lavender) 70%);
+    opacity:0.5; transition:width .5s cubic-bezier(.4,0,.2,1); border-radius:16px;
+  }
+  .lane.rank-1 .lane-fill{background:linear-gradient(90deg, #FFF3C4, var(--gold));}
+  .lane.rank-2 .lane-fill{background:linear-gradient(90deg, #F1F2F6, var(--silver));}
+  .lane.rank-3 .lane-fill{background:linear-gradient(90deg, #FBE3CF, var(--bronze));}
+
+  .badge{
+    position:relative; z-index:1; flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-family:'Jua', sans-serif;
+    font-size:15px; background:var(--lavender); color:var(--plum); border:2px solid transparent; box-sizing:border-box;
+  }
+  .lane.rank-1 .badge{background:var(--gold); color:#7A4B00; box-shadow:0 0 0 4px rgba(255,201,60,0.3);}
+  .lane.rank-2 .badge{background:var(--silver); color:#4a5066;}
+  .lane.rank-3 .badge{background:var(--bronze); color:#6a3d1a;}
+  .badge.badge-mid{background:#DCEEFF; border-color:#8FC7FF; color:#2C6493;}
+
+  .lane-main{ position:relative; z-index:1; flex:1 1 auto; min-width:0; display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .lane-name{
+    font-family:'Jua', sans-serif; font-size:19px; color:var(--plum); white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-width:0; flex:1 1 auto;
+  }
+  .lane-score{ font-size:14px; color:var(--plum-soft); font-weight:700; flex:0 0 auto; white-space:nowrap; }
+  .lane-score b{ color:var(--plum); font-size:20px; font-family:'Gaegu', sans-serif; }
+
+  .crown{ font-size:14px; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="eyebrow">TRACEN ACADEMY · SINAN BRANCH</div>
+    <h1>트레센학원신안지부 스코어보드</h1>
+    <div class="sub"><span class="live-dot"></span>실시간 순위 · 누구나 열람 가능</div>
+    <div class="track-edge"></div>
+  </div>
+
+  <div id="configWarning" class="config-warning" style="display:none;">
+    ⚠️ Firebase 설정이 아직 안 되어있어요. 이 파일 맨 아래 스크립트에서 <code>firebaseConfig</code> 부분을
+    본인의 Firebase 프로젝트 설정값으로 바꿔주세요.
+  </div>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <span class="count" id="countLabel">참가자 0명</span>
+      <span class="sync-info" id="syncInfo">연결 중...</span>
+    </div>
+
+    <div id="lanes"></div>
+    <div class="empty" id="emptyState" style="display:none;">
+      <div class="icon">🏆</div>
+      <div class="msg">아직 등록된 선수가 없어요</div>
+      <div class="hint">컨트롤 보드에서 선수를 추가해주세요</div>
+    </div>
+  </div>
+
+<script>
+/* ======================================================================
+   ⚙️ 컨트롤 보드(control.html)와 동일한 firebaseConfig를 붙여넣으세요.
+   ====================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDI2oqW_a3UAMMDgUg6gZnlauK-MgUnKvs",
+  authDomain: "scoreboard-b7985.firebaseapp.com",
+  databaseURL: "https://scoreboard-b7985-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "scoreboard-b7985",
+  storageBucket: "scoreboard-b7985.firebasestorage.app",
+  messagingSenderId: "187026388744",
+  appId: "1:187026388744:web:692c925fed7ede313b5ebd"
+};
+/* ====================================================================== */
+
+const isConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+let players = [];
+let lastRects = {};
+
+function setSyncInfo(text){
+  const el = document.getElementById('syncInfo');
+  if(el) el.textContent = text;
+}
+
+function initFirebase(){
+  if(!isConfigured){
+    document.getElementById('configWarning').style.display = 'block';
+    setSyncInfo('설정 필요');
+    render();
+    return;
+  }
+  firebase.initializeApp(firebaseConfig);
+  const playersRef = firebase.database().ref('scoreboard/players');
+
+  playersRef.on('value', (snapshot) => {
+    const arr = [];
+    snapshot.forEach((child) => {
+      const v = child.val() || {};
+      arr.push({ id: child.key, name: v.name || '', score: typeof v.score === 'number' ? v.score : 0 });
+    });
+    players = arr;
+    render();
+    const time = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    setSyncInfo(`실시간 연결됨 · ${time}`);
+  }, (err) => {
+    console.error(err);
+    setSyncInfo('연결 오류 · 새로고침 해주세요');
+  });
+}
+
+function sortedPlayers(){
+  return [...players].sort((a,b) => b.score - a.score);
+}
+
+function captureRects(){
+  lastRects = {};
+  document.querySelectorAll('.lane').forEach(el => { lastRects[el.dataset.id] = el.getBoundingClientRect(); });
+}
+
+function playFlip(){
+  document.querySelectorAll('.lane').forEach(el => {
+    const id = el.dataset.id;
+    const first = lastRects[id];
+    if(!first) return;
+    const last = el.getBoundingClientRect();
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    if(dx || dy){
+      el.style.transition = 'none';
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+      requestAnimationFrame(() => {
+        el.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+        el.style.transform = '';
+      });
+    }
+  });
+}
+
+function escapeHtml(str){
+  return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function render(){
+  captureRects();
+  const list = sortedPlayers();
+  const lanesEl = document.getElementById('lanes');
+  const emptyEl = document.getElementById('emptyState');
+  const countLabel = document.getElementById('countLabel');
+
+  countLabel.textContent = `참가자 ${players.length}명`;
+
+  if(list.length === 0){
+    lanesEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  const maxScore = Math.max(...list.map(p => p.score), 1);
+  const minFillPct = 6;
+
+  lanesEl.innerHTML = list.map((p, idx) => {
+    const rank = idx + 1;
+    const rankClass = rank <= 3 ? `rank-${rank}` : (rank <= 9 ? 'rank-mid' : '');
+    const badgeClass = (rank >= 4 && rank <= 9) ? 'badge-mid' : '';
+    const pct = p.score <= 0 ? minFillPct : Math.max(minFillPct, (p.score / maxScore) * 100);
+    const crown = rank === 1 ? '<span class="crown">👑</span>' : '';
+    const medalIcon = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+
+    return `
+      <div class="lane ${rankClass}" data-id="${p.id}">
+        <div class="lane-fill" style="width:${pct}%;"></div>
+        <div class="badge ${badgeClass}">${medalIcon}</div>
+        <div class="lane-main">
+          <div class="lane-name">${crown}${escapeHtml(p.name)}</div>
+          <div class="lane-score"><b>${p.score}</b>점</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  requestAnimationFrame(playFlip);
+}
+
+initFirebase();
+</script>
+
+</body>
+</html>

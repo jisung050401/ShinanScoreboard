@@ -382,6 +382,23 @@
   .sseat.hit{background:var(--gold);font-weight:700}
   .chip.att{background:#E6F4FF;color:#1B6AA5}
   .chip.att:hover{background:#CFE8FA}
+
+  .ach-card{background:var(--white);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;margin-bottom:10px;border-left:6px solid var(--rc,#8E9AAF)}
+  .ach-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:'Jua',sans-serif;font-size:16px;color:var(--plum)}
+  .ach-rar{color:#fff;border-radius:8px;padding:2px 8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;background:var(--rc,#8E9AAF)}
+  .ach-tag{font-size:11px;font-weight:700;border-radius:8px;padding:2px 7px;background:#F3EEFB;color:var(--plum-soft);font-family:'Noto Sans KR',sans-serif}
+  .ach-desc{font-size:13px;color:var(--plum);margin:6px 0 2px;white-space:pre-wrap}
+  .ach-cond{font-size:12.5px;color:var(--plum-soft);margin:2px 0}
+  .ach-bar{height:8px;border-radius:6px;background:#F1E7FB;overflow:hidden;margin:6px 0 2px}
+  .ach-bar i{display:block;height:100%;background:var(--rc,#8E9AAF)}
+  .ach-who{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .ach-chip{background:#FBF8FF;border-radius:8px;padding:3px 8px;font-size:12px;color:var(--plum)}
+  .ach-chip button{border:none;background:none;cursor:pointer;color:#B8305B;padding:0 0 0 4px}
+  .ach-form input[type=text],.ach-form textarea,.ach-form select,.ach-crow input[type=number],.ach-card select{border:2px solid #F1E7FB;border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--plum);background:#FFFDFB}
+  .ach-form textarea{width:100%;min-height:60px;resize:vertical;margin:6px 0}
+  .ach-crow{display:flex;gap:6px;align-items:center;margin:4px 0;flex-wrap:wrap}
+  .ach-crow input[type=number]{width:80px}
+  .ach-crow label{font-size:13px;color:var(--plum)}
 </style>
 </head>
 <body>
@@ -399,7 +416,7 @@
   </div>
 
   <div class="wrap" id="wrap">
-    <div class="main-nav"><button id="navScore" class="on">🏇 점수 컨트롤</button><button id="navTier">📋 티어표 편집</button><button id="navStats">📊 통계</button><button id="navDraw">🎲 마장</button><button id="navSched">📅 대진표</button></div>
+    <div class="main-nav"><button id="navScore" class="on">🏇 점수 컨트롤</button><button id="navTier">📋 티어표 편집</button><button id="navStats">📊 통계</button><button id="navDraw">🎲 마장</button><button id="navSched">📅 대진표</button><button id="navAch">🏅 업적</button></div>
     <div id="viewScore">
     <div class="add-card">
       <input id="nameInput" type="text" placeholder="선수 이름을 입력하세요" maxlength="20">
@@ -439,7 +456,7 @@
       <div id="tboard"></div>
     </div>
     <div id="viewStats" style="display:none">
-      <div class="tbox"><span class="thint" style="flex:1">티어·각질·등수 버튼을 누른 횟수가 자동으로 쌓여요. 숫자를 누르면 보안코드 확인 후 직접 고칠 수 있어요.</span><button class="tbtn danger" id="statsReset">통계 초기화</button></div>
+      <div class="tbox"><span class="thint" style="flex:1">티어·각질·등수 버튼을 누른 횟수가 자동으로 쌓여요. 연승은 1등이 연속된 횟수, 연패는 1등이 아닌 결과(2·3등)가 연속된 횟수예요(이 기능을 넣은 뒤의 결과부터 기록돼요). 숫자를 누르면 보안코드 확인 후 직접 고칠 수 있어요.</span><button class="tbtn danger" id="statsReset">통계 초기화</button></div>
       <div class="stats-wrap"><table class="stats-table" id="statsTable"></table></div>
     </div>
     <div id="viewDraw" style="display:none">
@@ -452,6 +469,23 @@
       <div class="thead"><span>🏟 마장 관리</span></div>
       <div class="tbox"><input type="text" id="vname" placeholder="경기장 이름"><select id="vdirsel"><option>우회전</option><option>좌회전</option></select><button class="tbtn" id="vadd">경기장 추가</button><button class="tbtn" id="vseed">기본 경기장 17개 등록</button></div>
       <div id="venueList"></div>
+    </div>
+    <div id="viewAch" style="display:none">
+      <div class="tbox ach-form" style="display:block">
+        <div class="thead" style="margin-top:0"><span id="achFormTitle">🏅 업적 만들기</span></div>
+        <div class="ach-crow"><input type="text" id="achTitle" placeholder="업적 제목 (예: 개근상)" maxlength="30" style="flex:1;min-width:140px"><select id="achRarity"><option value="n">일반</option><option value="r">희귀</option><option value="h">영웅</option><option value="l">전설</option></select></div>
+        <textarea id="achDesc" placeholder="업적 설명 (예: 12주 동안 빠짐없이 출석했어요)" maxlength="200"></textarea>
+        <div id="achModeWrap" class="ach-crow" style="display:none"><label>획득 방식 <select id="achMode"><option value="stat">통계 조건 달성</option><option value="manual">운영자가 직접 수여</option></select></label></div>
+        <div id="achCondWrap">
+          <div class="thint">달성 조건 · 통계 탭의 수치가 조건을 모두 만족하면 자동으로 달성돼요</div>
+          <div id="achConds"></div>
+          <button class="tbtn" id="achAddCond" type="button">+ 조건 추가</button>
+        </div>
+        <div id="achOptWrap" class="ach-crow" style="display:none;gap:16px"><label><input type="checkbox" id="achFirst"> 최초 달성자 1명만</label><label><input type="checkbox" id="achHide"> 달성자가 나오기 전까지 조건 비공개</label></div>
+        <div class="ach-crow"><button class="tbtn draw-go" id="achSave" type="button">업적 추가</button><button class="tbtn" id="achCancel" type="button" style="display:none">수정 취소</button></div>
+      </div>
+      <div class="order-note">📌 일반·희귀는 모든 플레이어가 달성할 수 있어요. 영웅·전설은 "최초 1명만", "조건 비공개", "직접 수여"를 쓸 수 있어요. 한 번 달성한 업적은 통계가 나중에 바뀌어도 유지돼요. 이 화면이 열려 있는 동안 통계가 바뀔 때마다 자동으로 달성 여부를 확인해요.</div>
+      <div id="achList"></div>
     </div>
     <div id="viewSched" style="display:none">
       <div class="tbox"><label style="font-size:13px;color:var(--plum)">주 수 <input type="number" id="schWeeks" min="1" max="52" value="12" style="width:70px;padding:7px;border:2px solid #F1E7FB;border-radius:10px"></label><button class="tbtn draw-go" id="schGo">📅 대진표 뽑기</button><button class="tbtn danger" id="schDel">대진표 내리기</button></div>
@@ -577,6 +611,18 @@ function ptsInit(){
 const RUN_STYLES = ['도주','선행','선입','추입'];
 function incStat(id, key){
   if(!playersRef) return;
+  // 등수 버튼(1·2·3등)은 횟수와 함께 연승/연패도 한 번에 기록 (연승=연속 1등, 연패=1등이 아닌 결과 연속)
+  if(/^r[0-2]$/.test(key)){
+    playersRef.child(id).child('stats').transaction((s) => {
+      s = s || {};
+      const n = (k) => Math.max(0, Math.floor(Number(s[k]) || 0));
+      s[key] = n(key) + 1;
+      if(key === 'r0'){ s.cw = n('cw') + 1; s.cl = 0; s.bw = Math.max(n('bw'), s.cw); }
+      else { s.cl = n('cl') + 1; s.cw = 0; s.bl = Math.max(n('bl'), s.cl); }
+      return s;
+    });
+    return;
+  }
   playersRef.child(id).child('stats').child(key).transaction((c) => (c || 0) + 1);
 }
 function usePoint(id, key, delta){ addScore(id, delta); incStat(id, key); }
@@ -610,7 +656,7 @@ function initFirebase(){
     players = arr;
     if(!isEditingName) render();
     renderStats();
-    playersLoaded = true; reconcileSchedule(); renderSchedule();
+    playersLoaded = true; reconcileSchedule(); renderSchedule(); achRender(); achEvaluate();
     if(document.getElementById('registerModal').style.display === 'flex') renderRegisterList();
   }, (err) => {
     console.error('동기화 오류', err);
@@ -1206,10 +1252,11 @@ function renderStats(){
   const T_ = PT_TIER_NAMES.map((n,i) => ['t'+i, n]), S_ = RUN_STYLES.map((n,i) => ['s'+i, n]), R_ = PT_RANK_NAMES.map((n,i) => ['r'+i, n]);
   const cell = (p, [k]) => { const v = statNum(p, k); return `<td class="num ${v ? '' : 'zero'}" data-pid="${p.id}" data-k="${k}" title="눌러서 수정">${v}</td>`; };
   const fav = (p) => { const m = Math.max(...S_.map(([k]) => statNum(p, k))); return m ? S_.filter(([k]) => statNum(p, k) === m).map(x => x[1]).join('·') : '—'; };
-  const head2 = [...T_, ...S_].map(x => `<th>${x[1]}</th>`).join('') + R_.map(x => `<th>${x[1]}</th>`).join('');
-  tb.innerHTML = `<thead><tr><th rowspan="2">유저</th><th colspan="5">티어 사용</th><th colspan="4">각질 사용</th><th rowspan="2">최다 각질</th><th colspan="3">등수</th><th rowspan="2">출석</th></tr><tr>${head2}</tr></thead>
-    <tbody>${players.map(p => `<tr><td>${escapeHtml(p.name)}</td>${[...T_, ...S_].map(c => cell(p, c)).join('')}<td>${fav(p)}</td>${R_.map(c => cell(p, c)).join('')}${cell(p, ['att'])}</tr>`).join('')}</tbody>
-    <tfoot><tr><td>합계</td>${[...T_, ...S_].map(([k]) => `<td>${players.reduce((a, p) => a + statNum(p, k), 0)}</td>`).join('')}<td></td>${R_.map(([k]) => `<td>${players.reduce((a, p) => a + statNum(p, k), 0)}</td>`).join('')}<td>${players.reduce((a, p) => a + statNum(p, 'att'), 0)}</td></tr></tfoot>`;
+  const STK = [['cw','현재 연승'],['bw','최고 연승'],['cl','현재 연패'],['bl','최고 연패']];
+  const head2 = [...T_, ...S_].map(x => `<th>${x[1]}</th>`).join('') + R_.map(x => `<th>${x[1]}</th>`).join('') + STK.map(x => `<th>${x[1]}</th>`).join('');
+  tb.innerHTML = `<thead><tr><th rowspan="2">유저</th><th colspan="5">티어 사용</th><th colspan="4">각질 사용</th><th rowspan="2">최다 각질</th><th colspan="3">등수</th><th rowspan="2">출석</th><th colspan="4">연속 기록</th></tr><tr>${head2}</tr></thead>
+    <tbody>${players.map(p => `<tr><td>${escapeHtml(p.name)}</td>${[...T_, ...S_].map(c => cell(p, c)).join('')}<td>${fav(p)}</td>${R_.map(c => cell(p, c)).join('')}${cell(p, ['att'])}${STK.map(c => cell(p, c)).join('')}</tr>`).join('')}</tbody>
+    <tfoot><tr><td>합계</td>${[...T_, ...S_].map(([k]) => `<td>${players.reduce((a, p) => a + statNum(p, k), 0)}</td>`).join('')}<td></td>${R_.map(([k]) => `<td>${players.reduce((a, p) => a + statNum(p, k), 0)}</td>`).join('')}<td>${players.reduce((a, p) => a + statNum(p, 'att'), 0)}</td><td colspan="4"></td></tr></tfoot>`;
 }
 document.addEventListener('click', async (e) => {
   const td = e.target.closest && e.target.closest('td.num'); if(!td || !playersRef) return;
@@ -1232,6 +1279,172 @@ $('#statsReset').onclick = async () => {
   playersRef.update(u).then(() => setSaveStatus('saved')).catch(() => setSaveStatus('error'));
 };
 
+/* ================= 업적 ================= */
+const ACH_R=[['n','일반','#8E9AAF'],['r','희귀','#3B8BD4'],['h','영웅','#8E5BD9'],['l','전설','#E0A100']];
+const achR=k=>ACH_R.find(r=>r[0]==k)||ACH_R[0];
+const ACH_OPL={'>=':'≥','>':'>','=':'='};
+// [키, 선택칸 이름, 짧은 이름]
+const achStatList=()=>[
+  ...PT_TIER_NAMES.map((n,i)=>['t'+i,'티어 사용 · '+n,n+' 사용']),
+  ...RUN_STYLES.map((n,i)=>['s'+i,'각질 · '+n,n]),
+  ...PT_RANK_NAMES.map((n,i)=>['r'+i,'등수 · '+n,n]),
+  ['att','출석','출석'],
+  ['cw','연속 기록 · 현재 연승','현재 연승'],['bw','연속 기록 · 최고 연승','최고 연승'],['cl','연속 기록 · 현재 연패','현재 연패'],['bl','연속 기록 · 최고 연패','최고 연패'],
+  ['tsum','티어 사용 합계','티어 사용 합계'],['ssum','각질 사용 합계','각질 사용 합계'],['rsum','등수 합계 (1·2·3등)','등수 합계']
+];
+function achStat(p,k){
+  const sum=(pre,n)=>Array.from({length:n},(_,i)=>statNum(p,pre+i)).reduce((a,b)=>a+b,0);
+  if(k=='tsum')return sum('t',PT_TIER_NAMES.length);
+  if(k=='ssum')return sum('s',RUN_STYLES.length);
+  if(k=='rsum')return sum('r',PT_RANK_NAMES.length);
+  return statNum(p,k);
+}
+const achCmp=(a,op,b)=>op=='>='?a>=b:op=='>'?a>b:a==b;
+const achCondTxt=a=>a.conds.map(c=>`${c.label} ${ACH_OPL[c.op]||'≥'} ${c.v}`).join(' · ')+(a.conds.length>1?' (모두 만족)':'');
+
+let AR={},AG={},ACOND={},A=[],aEdit=null,aTimer=null,aCondRows=[{k:'att',op:'>=',v:''}];
+const aBusy=new Set(),aBase=()=>firebase.database().ref('scoreboard');
+function achListen(){
+  if(!isConfigured)return;
+  aBase().child('achievements').on('value',s=>{AR=s.val()||{};achMerge()});
+  aBase().child('achCond').on('value',s=>{ACOND=s.val()||{};achMerge()});
+  aBase().child('achGrants').on('value',s=>{AG=s.val()||{};achRender();achEvaluate()});
+}
+function achMerge(){
+  A=Object.entries(AR).map(([id,v])=>({id,title:v.title||'',desc:v.desc||'',rarity:v.rarity||'n',manual:!!v.manual,firstOnly:!!v.firstOnly,hidden:!!v.hidden,ts:v.ts||0,
+    conds:asArr(ACOND[id]).filter(c=>c&&c.k).map(c=>({k:c.k,op:c.op||'>=',v:Number(c.v)||0,label:c.label||c.k}))}))
+    .sort((a,b)=>ACH_R.findIndex(r=>r[0]==a.rarity)-ACH_R.findIndex(r=>r[0]==b.rarity)||a.ts-b.ts);
+  achRender();achEvaluate();
+}
+const achHolders=a=>{const ids=new Set(players.map(p=>p.id));return Object.entries(AG[a.id]||{}).filter(([pid])=>ids.has(pid)).map(([pid,g])=>({pid,name:(players.find(p=>p.id==pid)||{}).name||'',ts:(g||{}).ts||0,manual:!!(g||{}).manual})).sort((x,y)=>x.ts-y.ts)};
+
+/* 통계가 조건을 만족한 유저에게 자동 수여 */
+function achEvaluate(){clearTimeout(aTimer);aTimer=setTimeout(achRun,300)}
+function achRun(){
+  if(!playersLoaded||!isConfigured||!players.length)return;
+  const base=aBase().child('achGrants'),ids=new Set(players.map(p=>p.id));
+  // 삭제된 선수의 달성 기록 정리 (최초 1명 업적은 자리가 다시 열려요)
+  Object.entries(AG).forEach(([aid,m])=>Object.keys(m||{}).forEach(pid=>{
+    if(ids.has(pid))return;const key='rm|'+aid+'|'+pid;if(aBusy.has(key))return;aBusy.add(key);
+    base.child(aid).child(pid).remove().catch(()=>{}).then(()=>aBusy.delete(key));
+  }));
+  A.forEach(a=>{
+    if(a.manual||!a.conds.length)return;
+    const have=AG[a.id]||{},ok=players.filter(p=>a.conds.every(c=>achCmp(achStat(p,c.k),c.op,c.v)));
+    if(a.firstOnly){
+      if(Object.keys(have).some(pid=>ids.has(pid))||!ok.length)return;
+      const sc=p=>a.conds.reduce((s,c)=>s+achStat(p,c.k),0);ok.sort((x,y)=>sc(y)-sc(x));
+      if(ok.length>1&&sc(ok[0])==sc(ok[1]))return; // 동시에 여러 명이면 누가 먼저인지 알 수 없어서 보류
+      const key='f|'+a.id;if(aBusy.has(key))return;aBusy.add(key);
+      base.child(a.id).transaction(cur=>cur?undefined:{[ok[0].id]:{ts:Date.now(),auto:true}}).catch(()=>{}).then(()=>aBusy.delete(key));
+    }else ok.forEach(p=>{
+      if(have[p.id])return;const key='g|'+a.id+'|'+p.id;if(aBusy.has(key))return;aBusy.add(key);
+      base.child(a.id).child(p.id).transaction(cur=>cur?undefined:{ts:Date.now(),auto:true}).catch(()=>{}).then(()=>aBusy.delete(key));
+    });
+  });
+}
+
+/* 폼 */
+function achFormSync(){
+  const hl=['h','l'].includes($('#achRarity').value);
+  $('#achModeWrap').style.display=hl?'':'none';
+  if(!hl)$('#achMode').value='stat';
+  const manual=$('#achMode').value=='manual';
+  $('#achCondWrap').style.display=manual?'none':'';
+  $('#achOptWrap').style.display=hl&&!manual?'flex':'none';
+}
+function achCondRows(){
+  $('#achConds').innerHTML=aCondRows.map((r,i)=>`<div class="ach-crow"><select data-ci="${i}" data-f="k">${achStatList().map(([k,n])=>`<option value="${k}" ${k==r.k?'selected':''}>${n}</option>`).join('')}</select><select data-ci="${i}" data-f="op"><option value=">=" ${r.op=='>='?'selected':''}>≥ (이상)</option><option value=">" ${r.op=='>'?'selected':''}>&gt; (초과)</option><option value="=" ${r.op=='='?'selected':''}>= (같음)</option></select><input type="number" min="0" step="1" data-ci="${i}" data-f="v" value="${r.v}" placeholder="횟수">${aCondRows.length>1?`<button class="tbtn danger" data-cdel="${i}" type="button">✕</button>`:''}</div>`).join('');
+}
+$('#achConds').addEventListener('input',e=>{const t=e.target;if(t.dataset.ci===undefined)return;aCondRows[Number(t.dataset.ci)][t.dataset.f]=t.value});
+$('#achConds').addEventListener('change',e=>{const t=e.target;if(t.dataset.ci===undefined)return;aCondRows[Number(t.dataset.ci)][t.dataset.f]=t.value});
+$('#achConds').addEventListener('click',e=>{const d=e.target.dataset.cdel;if(d===undefined)return;aCondRows.splice(Number(d),1);achCondRows()});
+$('#achAddCond').onclick=()=>{aCondRows.push({k:'att',op:'>=',v:''});achCondRows()};
+$('#achRarity').onchange=achFormSync;$('#achMode').onchange=achFormSync;
+function achFormReset(){
+  aEdit=null;$('#achTitle').value='';$('#achDesc').value='';$('#achRarity').value='n';$('#achMode').value='stat';
+  $('#achFirst').checked=false;$('#achHide').checked=false;aCondRows=[{k:'att',op:'>=',v:''}];
+  $('#achFormTitle').textContent='🏅 업적 만들기';$('#achSave').textContent='업적 추가';$('#achCancel').style.display='none';
+  achFormSync();achCondRows();
+}
+$('#achCancel').onclick=achFormReset;
+$('#achSave').onclick=()=>{
+  if(!isConfigured)return;
+  const title=$('#achTitle').value.trim(),desc=$('#achDesc').value.trim(),rarity=$('#achRarity').value,hl=['h','l'].includes(rarity);
+  const manual=hl&&$('#achMode').value=='manual';
+  if(!title)return alert('업적 제목을 입력해 주세요.');
+  const names=Object.fromEntries(achStatList().map(([k,,s])=>[k,s]));
+  let conds=[];
+  if(!manual){
+    for(const r of aCondRows){
+      const v=Number(r.v);
+      if(String(r.v).trim()===''||!Number.isInteger(v)||v<0)return alert('조건의 횟수는 0 이상의 정수로 입력해 주세요.');
+      conds.push({k:r.k,op:r.op,v,label:names[r.k]||r.k});
+    }
+    if(!conds.length)return alert('달성 조건을 하나 이상 넣어 주세요.');
+  }
+  const old=aEdit?A.find(x=>x.id==aEdit):null;
+  const id=aEdit||aBase().child('achievements').push().key,upd={};
+  upd['achievements/'+id]={title,desc,rarity,manual,firstOnly:hl&&!manual&&$('#achFirst').checked,hidden:hl&&!manual&&$('#achHide').checked,ts:old?old.ts:Date.now()};
+  upd['achCond/'+id]=manual?null:conds;
+  tWrite(aBase().update(upd));
+  achFormReset();
+};
+function achEditStart(id){
+  const a=A.find(x=>x.id==id);if(!a)return;
+  aEdit=id;$('#achTitle').value=a.title;$('#achDesc').value=a.desc;$('#achRarity').value=a.rarity;
+  $('#achMode').value=a.manual?'manual':'stat';$('#achFirst').checked=a.firstOnly;$('#achHide').checked=a.hidden;
+  aCondRows=a.conds.length?a.conds.map(c=>({k:c.k,op:c.op,v:c.v})):[{k:'att',op:'>=',v:''}];
+  $('#achFormTitle').textContent='✏️ 업적 수정 · '+a.title;$('#achSave').textContent='수정 저장';$('#achCancel').style.display='';
+  achFormSync();achCondRows();$('#achTitle').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* 목록 */
+function achRender(){
+  const el=$('#achList');if(!el)return;
+  const keep={};el.querySelectorAll('select[data-asel]').forEach(s=>{keep[s.dataset.asel]=s.value});
+  if(!A.length){el.innerHTML='<div class="thint">아직 만든 업적이 없어요. 위에서 첫 업적을 만들어 보세요.</div>';return}
+  const total=players.length;
+  el.innerHTML=A.map(a=>{
+    const r=achR(a.rarity),hs=achHolders(a),pct=total?Math.round(hs.length/total*100):0;
+    const tags=(a.firstOnly?'<span class="ach-tag">👑 최초 1인</span>':'')+(a.hidden?'<span class="ach-tag">🔒 조건 비공개</span>':'')+(a.manual?'<span class="ach-tag">🎁 직접 수여</span>':'');
+    const cond=a.manual?'🎁 운영자가 직접 수여하는 업적이에요':'조건: '+escapeHtml(achCondTxt(a));
+    const chips=hs.map(h=>`<span class="ach-chip">${escapeHtml(h.name)}${h.manual?`<button data-arevoke="${a.id}|${h.pid}" title="수여 취소">✕</button>`:''}</span>`).join('')||'<span class="thint">아직 달성자가 없어요</span>';
+    const give=a.manual?`<div class="ach-crow"><select data-asel="${a.id}">${players.filter(p=>!hs.some(h=>h.pid==p.id)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select><button class="tbtn" data-agive="${a.id}" type="button">🎁 수여</button></div>`:'';
+    return `<div class="ach-card" style="--rc:${r[2]}"><div class="ach-top"><span class="ach-rar">${r[1]}</span><span>${escapeHtml(a.title)}</span>${tags}</div>
+      ${a.desc?`<div class="ach-desc">${escapeHtml(a.desc)}</div>`:''}<div class="ach-cond">${cond}</div>
+      <div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성 ${hs.length}/${total}명 (${pct}%)</div>
+      <div class="ach-who">${chips}</div>${give}
+      <div class="ach-crow" style="margin-top:8px"><button class="tbtn" data-aedit="${a.id}" type="button">수정</button><button class="tbtn danger" data-areset="${a.id}" type="button">달성 기록 초기화</button><button class="tbtn danger" data-adel="${a.id}" type="button">삭제</button></div></div>`;
+  }).join('');
+  el.querySelectorAll('select[data-asel]').forEach(s=>{if(keep[s.dataset.asel]&&[...s.options].some(o=>o.value==keep[s.dataset.asel]))s.value=keep[s.dataset.asel]});
+}
+$('#achList').addEventListener('click',async e=>{
+  const d=e.target.dataset;if(!d||!isConfigured)return;
+  if(d.aedit)return achEditStart(d.aedit);
+  if(d.agive){
+    const sel=$('#achList').querySelector(`select[data-asel="${d.agive}"]`);if(!sel||!sel.value)return alert('수여할 선수가 없어요.');
+    return void tWrite(aBase().child('achGrants/'+d.agive+'/'+sel.value).set({ts:Date.now(),manual:true}));
+  }
+  if(d.arevoke){
+    const [aid,pid]=d.arevoke.split('|');if(!(await checkCode()))return;if(!confirm('이 수여를 취소할까요?'))return;
+    return void tWrite(aBase().child('achGrants/'+aid+'/'+pid).remove());
+  }
+  if(d.areset){
+    const a=A.find(x=>x.id==d.areset);if(!a||!(await checkCode()))return;
+    if(!confirm(`"${a.title}"의 달성 기록을 모두 지울까요?`+(a.manual?'':'\n지금 조건을 만족하는 선수는 바로 다시 달성 처리돼요.')))return;
+    return void tWrite(aBase().child('achGrants/'+a.id).remove());
+  }
+  if(d.adel){
+    const a=A.find(x=>x.id==d.adel);if(!a||!(await checkCode()))return;
+    if(!confirm(`"${a.title}" 업적을 삭제할까요? 달성 기록도 함께 사라져요.`))return;
+    const u={};u['achievements/'+a.id]=null;u['achCond/'+a.id]=null;u['achGrants/'+a.id]=null;
+    if(aEdit==a.id)achFormReset();
+    tWrite(aBase().update(u));
+  }
+});
+achFormSync();achCondRows();
+
 /* ================= 티어표 편집 (Firebase 실시간 저장) ================= */
 let tcur='sprint',tpq='',mvT=null,drag=null,ay=null,timer=null;
 const tBase=()=>firebase.database().ref('scoreboard/tier'),TB=()=>T.boards[tcur];
@@ -1246,11 +1459,12 @@ function tRender(){
 }
 function tierInit(){if(isConfigured)tListen(()=>{if(!drag)tRender()})}
 function showView(v){
-  [['score','Score'],['tier','Tier'],['stats','Stats'],['draw','Draw'],['sched','Sched']].forEach(([k,n])=>{
+  [['score','Score'],['tier','Tier'],['stats','Stats'],['draw','Draw'],['sched','Sched'],['ach','Ach']].forEach(([k,n])=>{
     $('#view'+n).style.display=v==k?'':'none';$('#nav'+n).classList.toggle('on',v==k);
   });
-  $('#wrap').classList.toggle('wide',v!='score');if(v=='tier')tRender();if(v=='stats')renderStats();
+  $('#wrap').classList.toggle('wide',v!='score');if(v=='tier')tRender();if(v=='stats')renderStats();if(v=='ach')achRender();
 }
+$('#navAch').onclick=()=>showView('ach');
 $('#navScore').onclick=()=>showView('score');$('#navTier').onclick=()=>showView('tier');$('#navStats').onclick=()=>showView('stats');$('#navDraw').onclick=()=>showView('draw');$('#navSched').onclick=()=>showView('sched');
 /* 보안코드 확인 (주자등록 초기화와 같은 코드) */
 function askCode(msg){return new Promise(res=>{const m=$('#codeModal'),i=$('#codeInput');$('#codeMsg').textContent=msg;i.value='';m.style.display='flex';i.focus();
@@ -1326,6 +1540,7 @@ tierInit();
 ptsInit();
 drawInit();
 schedInit();
+achListen();
 </script>
 
 </body>

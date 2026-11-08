@@ -253,6 +253,22 @@
   .sseat.hit{background:var(--gold);font-weight:700}
   .chip.att{background:#E6F4FF;color:#1B6AA5}
   .chip.att:hover{background:#CFE8FA}
+
+  .ach-card{background:var(--white);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;margin-bottom:10px;border-left:6px solid var(--rc,#8E9AAF)}
+  .ach-card.got{background:#FFFCEB;box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+  .ach-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:'Jua',sans-serif;font-size:17px;color:var(--plum)}
+  .ach-rar{color:#fff;border-radius:8px;padding:2px 8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;background:var(--rc,#8E9AAF)}
+  .ach-tag{font-size:11px;font-weight:700;border-radius:8px;padding:2px 7px;background:#F3EEFB;color:var(--plum-soft);font-family:'Noto Sans KR',sans-serif}
+  .ach-desc{font-size:13px;color:var(--plum);margin:6px 0 2px;white-space:pre-wrap}
+  .ach-cond{font-size:12.5px;color:var(--plum-soft);margin:3px 0}
+  .ach-bar{height:8px;border-radius:6px;background:#F1E7FB;overflow:hidden;margin:8px 0 2px}
+  .ach-bar i{display:block;height:100%;background:var(--rc,#8E9AAF)}
+  .ach-more{border:none;background:#F3EEFB;color:var(--plum-soft);border-radius:10px;padding:6px 12px;font-size:12.5px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit}
+  .ach-more:hover{background:var(--lavender)}
+  .ach-who{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .ach-chip{background:#FBF8FF;border-radius:8px;padding:4px 9px;font-size:12.5px;color:var(--plum)}
+  .ach-chip small{color:var(--plum-soft);margin-left:4px}
+  .ach-chip.hit{background:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -270,7 +286,7 @@
   </div>
 
   <div class="wrap">
-    <div class="main-nav"><button id="navScore" class="on">🏆 스코어보드</button><button id="navTier">📋 티어표</button><button id="navDraw">🎲 마장</button><button id="navSched">📅 대진표</button></div>
+    <div class="main-nav"><button id="navScore" class="on">🏆 스코어보드</button><button id="navTier">📋 티어표</button><button id="navDraw">🎲 마장</button><button id="navSched">📅 대진표</button><button id="navAch">🏅 업적</button></div>
     <div id="viewScore">
     <div class="toolbar">
       <span class="count" id="countLabel">참가자 0명</span>
@@ -303,6 +319,12 @@
       <div id="sres"></div>
       <div class="ttabs" id="stabs"></div>
       <div id="sview"></div>
+    </div>
+    <div id="viewAch" style="display:none">
+      <div class="tbox"><input type="search" id="aq" placeholder="🔍 이름 검색 (내 업적 확인)"></div>
+      <div id="asum"></div>
+      <div class="ttabs" id="atabs"></div>
+      <div id="achBoard"><div class="thint">불러오는 중...</div></div>
     </div>
   </div>
 
@@ -394,6 +416,7 @@ function initFirebase(){
     players = arr;
     render();
     schedRender();
+    achRenderMain();
     const time = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
     setSyncInfo(`실시간 연결됨 · ${time}`);
   }, (err) => {
@@ -701,13 +724,70 @@ function tRender(){
   $('#tboard').innerHTML=b.tiers.map(t=>`<div class="trow"><div class="tlabel" style="background:${t.color}">${escapeHtml(t.name)}</div><div class="tzone">${t.items.map(ch).join('')}</div></div>`).join('')
    +(b.pool.length?`<div class="thead"><span>미배치 (${b.pool.length})</span></div><div class="trow"><div class="tzone">${b.pool.map(ch).join('')}</div></div>`:'');
 }
+/* ================= 업적 (보기 전용) ================= */
+const ACH_R=[['n','일반','#8E9AAF'],['r','희귀','#3B8BD4'],['h','영웅','#8E5BD9'],['l','전설','#E0A100']];
+const ACH_OPL={'>=':'≥','>':'>','=':'='};
+let AR={},AG={},ACOND={},astarted=false,aflt='all';const aOpen=new Set(),aCondReq={};
+function achInitMain(){
+  if(astarted)return;
+  if(!isConfigured){alert('Firebase 설정이 되어있지 않아요.');return}
+  astarted=true;const b=firebase.database().ref('scoreboard');
+  b.child('achievements').on('value',s=>{AR=s.val()||{};achNeedConds();achRenderMain()});
+  b.child('achGrants').on('value',s=>{AG=s.val()||{};achNeedConds();achRenderMain()});
+}
+/* 비공개 조건은 달성자가 나오기 전에는 아예 불러오지 않아요 */
+function achNeedConds(){
+  Object.keys(AR).forEach(id=>{
+    const a=AR[id]||{};if(a.manual||aCondReq[id])return;
+    if(a.hidden&&!Object.keys(AG[id]||{}).length)return;
+    aCondReq[id]=1;
+    firebase.database().ref('scoreboard/achCond/'+id).on('value',s=>{ACOND[id]=asArr(s.val()).filter(c=>c&&c.k);achRenderMain()});
+  });
+}
+function achRenderMain(){
+  if(!astarted)return;
+  const ids=new Set(players.map(p=>p.id)),total=players.length,q=$('#aq').value.trim().toLowerCase();
+  const all=Object.entries(AR).map(([id,v])=>({id,title:v.title||'',desc:v.desc||'',rarity:v.rarity||'n',manual:!!v.manual,firstOnly:!!v.firstOnly,hidden:!!v.hidden,ts:v.ts||0}))
+    .sort((a,b)=>ACH_R.findIndex(r=>r[0]==a.rarity)-ACH_R.findIndex(r=>r[0]==b.rarity)||a.ts-b.ts);
+  all.forEach(a=>{a.hs=Object.entries(AG[a.id]||{}).filter(([pid])=>ids.has(pid)).map(([pid,g])=>({pid,name:(players.find(p=>p.id==pid)||{}).name||'',ts:(g||{}).ts||0})).sort((x,y)=>x.ts-y.ts)});
+  const hitP=q?players.filter(p=>p.name.toLowerCase().includes(q)):[];
+  $('#asum').innerHTML=hitP.map(p=>{const mine=all.filter(a=>a.hs.some(h=>h.pid==p.id));return `<div class="dhist"><b>${escapeHtml(p.name)}</b> · 달성 ${mine.length}/${all.length}개${mine.length?' · '+mine.map(a=>escapeHtml(a.title)).join(', '):''}</div>`}).join('');
+  $('#atabs').innerHTML=[['all','전체','']].concat(ACH_R.map(r=>[r[0],r[1],r[2]])).map(([k,l])=>`<button class="ttab ${k==aflt?'on':''}" data-aflt="${k}">${l}${k=='all'?` ${all.length}`:` ${all.filter(a=>a.rarity==k).length}`}</button>`).join('');
+  const list=aflt=='all'?all:all.filter(a=>a.rarity==aflt);
+  if(!all.length){$('#achBoard').innerHTML='<div class="thint">아직 등록된 업적이 없어요.</div>';return}
+  if(!list.length){$('#achBoard').innerHTML='<div class="thint">이 등급의 업적이 아직 없어요.</div>';return}
+  $('#achBoard').innerHTML=list.map(a=>{
+    const r=ACH_R.find(x=>x[0]==a.rarity)||ACH_R[0],pct=total?Math.round(a.hs.length/total*100):0;
+    const mine=q&&a.hs.some(h=>h.name.toLowerCase().includes(q)),open=aOpen.has(a.id);
+    const conds=ACOND[a.id]||[];
+    let cond;
+    if(a.manual)cond='🎁 운영자가 직접 수여하는 업적이에요';
+    else if(a.hidden&&!a.hs.length)cond='🔒 달성 조건은 비공개예요 · 누군가 달성하면 공개돼요';
+    else if(!conds.length)cond='조건 불러오는 중...';
+    else cond='조건: '+escapeHtml(conds.map(c=>`${c.label} ${ACH_OPL[c.op]||'≥'} ${c.v}`).join(' · '))+(conds.length>1?' (모두 만족)':'');
+    const tags=(a.firstOnly?'<span class="ach-tag">👑 최초 1인</span>':'')+(a.hidden?'<span class="ach-tag">🔒 비공개 조건</span>':'')+(a.manual?'<span class="ach-tag">🎁 직접 수여</span>':'');
+    const first=a.firstOnly?`<div class="ach-cond">${a.hs.length?'👑 최초 달성자: <b>'+escapeHtml(a.hs[0].name)+'</b>':'아직 달성자가 없어요 · 첫 번째 주인공이 되어보세요!'}</div>`:'';
+    const who=open?`<div class="ach-who">${a.hs.length?a.hs.map(h=>`<span class="ach-chip ${q&&h.name.toLowerCase().includes(q)?'hit':''}">${escapeHtml(h.name)}<small>${dTime(h.ts)}</small></span>`).join(''):'<span class="thint">아직 달성한 유저가 없어요</span>'}</div>`:'';
+    return `<div class="ach-card ${mine?'got':''}" style="--rc:${r[2]}"><div class="ach-top"><span class="ach-rar">${r[1]}</span><span>${escapeHtml(a.title)}</span>${tags}${mine?'<span class="ach-tag" style="background:var(--gold);color:var(--plum)">✓ 달성</span>':''}</div>
+      ${a.desc?`<div class="ach-desc">${escapeHtml(a.desc)}</div>`:''}<div class="ach-cond">${cond}</div>${first}
+      <div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성률 <b>${pct}%</b> (${a.hs.length}/${total}명)</div>
+      <button class="ach-more" data-adet="${a.id}">${open?'접기 ▲':'자세히보기 ▼'}</button>${who}</div>`;
+  }).join('');
+}
+$('#aq').oninput=achRenderMain;
+document.addEventListener('click',e=>{
+  const d=e.target.dataset;if(!d)return;
+  if(d.aflt){aflt=d.aflt;achRenderMain()}
+  if(d.adet){aOpen.has(d.adet)?aOpen.delete(d.adet):aOpen.add(d.adet);achRenderMain()}
+});
 function showView(v){
-  [['score','Score'],['tier','Tier'],['draw','Draw'],['sched','Sched']].forEach(([k,n])=>{$('#view'+n).style.display=v==k?'':'none';$('#nav'+n).classList.toggle('on',v==k)});
+  [['score','Score'],['tier','Tier'],['draw','Draw'],['sched','Sched'],['ach','Ach']].forEach(([k,n])=>{$('#view'+n).style.display=v==k?'':'none';$('#nav'+n).classList.toggle('on',v==k)});
+  if(v=='ach'){achInitMain();achRenderMain()}
   if(v=='tier'){tierInit();tRender()}
   if(v=='draw')drawInitMain();
   if(v=='sched'){schedInitMain();schedRender()}
 }
-$('#navScore').onclick=()=>showView('score');$('#navTier').onclick=()=>showView('tier');$('#navDraw').onclick=()=>showView('draw');$('#navSched').onclick=()=>showView('sched');
+$('#navScore').onclick=()=>showView('score');$('#navTier').onclick=()=>showView('tier');$('#navDraw').onclick=()=>showView('draw');$('#navSched').onclick=()=>showView('sched');$('#navAch').onclick=()=>showView('ach');
 $('#tq').oninput=tRender;
 document.addEventListener('click',e=>{const k=e.target.dataset&&e.target.dataset.ttab;if(k){tcur=k;tRender()}});
 

@@ -191,6 +191,48 @@
   .lane-score b{ color:var(--plum); font-size:20px; font-family:'Gaegu', sans-serif; }
 
   .crown{ font-size:14px; }
+
+  /* ===== 티어표 ===== */
+  .main-nav{display:flex;gap:8px;margin-top:-20px;margin-bottom:12px;position:relative}
+  .main-nav button{flex:1;border:none;border-radius:14px;padding:11px;font-family:'Jua',sans-serif;font-size:15px;background:var(--white);color:var(--plum-soft);box-shadow:var(--shadow);cursor:pointer}
+  .main-nav button.on{background:linear-gradient(135deg,var(--gold),var(--pink));color:var(--plum)}
+  #viewScore .toolbar,#viewScore .add-card{margin-top:0}
+  .wrap.wide{max-width:1000px}
+  .ttabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+  .ttab{border:none;border-radius:12px;padding:8px 14px;font-family:'Jua',sans-serif;font-size:14px;background:var(--white);color:var(--plum-soft);box-shadow:var(--shadow);cursor:pointer}
+  .ttab.on{background:var(--plum);color:#fff}
+  .tbox{background:var(--white);border-radius:16px;box-shadow:var(--shadow);padding:10px 14px;margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .tbox input[type=search],.tbox input[type=text]{flex:1;min-width:120px;border:2px solid #F1E7FB;border-radius:12px;padding:9px 12px;font-size:14px;font-family:inherit;color:var(--plum);background:#FFFDFB;outline:none}
+  .tbtn{border:none;border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;background:#EFF1FB;color:#4B5AAE;font-family:'Noto Sans KR',sans-serif}
+  .tbtn:hover{background:var(--lavender)}
+  .tbtn.danger{background:#FDE7EE;color:#B8305B}
+  .trow{display:flex;background:var(--white);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:8px}
+  .tlabel{width:92px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;color:#222;font-family:'Jua',sans-serif;font-size:18px;text-align:center;word-break:break-all}
+  .tlabel input[type=text]{width:76px;text-align:center;padding:3px;border:1px solid rgba(0,0,0,.15);border-radius:6px;font-family:'Jua',sans-serif;font-size:15px;color:#222;background:rgba(255,255,255,.6)}
+  .tlabel input[type=color]{width:30px;height:24px;padding:0;border:0;background:none}
+  .tlabel button{border:none;border-radius:6px;padding:1px 6px;font-size:12px;cursor:pointer}
+  .tzone{flex:1;display:flex;flex-wrap:wrap;gap:4px;padding:6px;min-height:84px;align-content:flex-start}
+  .tzone.over{background:#FFF3C4}
+  .tchip{width:72px;height:72px;position:relative;border-radius:8px;overflow:hidden;border:2px solid transparent}
+  .tchip[draggable=true]{cursor:grab}
+  .tchip img{width:100%;height:100%;object-fit:cover;display:block}
+  .tchip small{position:absolute;left:0;right:0;bottom:0;background:rgba(74,51,88,.7);color:#fff;font-size:10px;text-align:center;white-space:nowrap;overflow:hidden}
+  .tchip .tx{position:absolute;top:0;right:0;display:none;border:none;background:rgba(255,255,255,.85);padding:0 5px;font-size:11px;cursor:pointer;border-radius:0 0 0 6px}
+  .tchip:hover .tx{display:block}
+  .tchip.hit{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .tchip.dim{opacity:.3}
+  .thead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 8px;font-family:'Jua',sans-serif;color:var(--plum)}
+  .thead input[type=search],.thead select{border:2px solid #F1E7FB;border-radius:10px;padding:6px 10px;font-size:13px;font-family:inherit;color:var(--plum);background:#FFFDFB}
+  .thead input[type=search]{width:150px}
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-bottom:14px}
+  .tcard{display:flex;gap:12px;padding:12px;background:var(--white);border-radius:16px;box-shadow:var(--shadow)}
+  .tcard img{width:72px;height:72px;border-radius:8px;object-fit:cover}
+  .tcard h3{margin:0 0 6px;font-family:'Jua',sans-serif;font-size:17px;color:var(--plum)}
+  .tbadges{display:flex;flex-wrap:wrap;gap:4px}
+  .tbadge{display:flex;border-radius:6px;overflow:hidden;font-size:12px;border:1px solid #F1E7FB}
+  .tbadge span{padding:2px 6px;background:#FBF8FF;color:var(--plum-soft)}
+  .tbadge b{padding:2px 8px;color:#222;min-width:28px;text-align:center}
+  .thint{color:var(--plum-soft);font-size:13px;padding:6px 2px}
 </style>
 </head>
 <body>
@@ -208,6 +250,8 @@
   </div>
 
   <div class="wrap">
+    <div class="main-nav"><button id="navScore" class="on">🏆 스코어보드</button><button id="navTier">📋 티어표</button></div>
+    <div id="viewScore">
     <div class="toolbar">
       <span class="count" id="countLabel">참가자 0명</span>
       <div class="toolbar-right">
@@ -221,6 +265,13 @@
       <div class="icon">🏆</div>
       <div class="msg">아직 등록된 선수가 없어요</div>
       <div class="hint">컨트롤 보드에서 선수를 추가해주세요</div>
+    </div>
+    </div>
+    <div id="viewTier" style="display:none">
+      <div class="tbox"><input type="search" id="tq" placeholder="🔍 캐릭터 이름 검색 (거리별 티어 확인)"></div>
+      <div id="tresult"></div>
+      <div class="ttabs" id="ttabs"></div>
+      <div id="tboard"></div>
     </div>
   </div>
 
@@ -511,6 +562,50 @@ document.getElementById('codeSubmitBtn').addEventListener('click', () => {
 });
 
 document.getElementById('doneBtn').addEventListener('click', closeRegisterModal);
+
+
+/* ================= 티어표 공통 ================= */
+const $=s=>document.querySelector(s);
+const BOARDS=[['sprint','단거리'],['mile','마일'],['medium','중거리'],['long','장거리'],['dirt','더트']];
+const DEFN=['S','A','B','C','D'],DEFC=['#ff7f7f','#ffbf7f','#ffdf7f','#bfff7f','#7fffff'];
+const defTiers=()=>DEFN.map((n,i)=>({id:'d'+i,name:n,color:DEFC[i],items:[]}));
+function normBoard(b){b=b||{};const t=(b.tiers||[]).filter(Boolean).map(x=>({id:x.id,name:x.name||'',color:x.color||'#cccccc',items:(x.items||[]).filter(Boolean)}));return{tiers:t.length?t:defTiers(),pool:(b.pool||[]).filter(Boolean)}}
+let T={chars:[],boards:{}};BOARDS.forEach(([k])=>T.boards[k]=normBoard());
+const tcOf=id=>T.chars.find(c=>c.id===id);
+function tChip(id,hit,edit){const c=tcOf(id);if(!c)return'';return `<div class="tchip ${hit===true?'hit':hit===false?'dim':''}" data-id="${id}" title="${escapeHtml(c.name)}" ${edit?'draggable="true"':''}><img src="${c.img}" alt=""><small>${escapeHtml(c.name)}</small>${edit?`<button class="tx" data-del="${id}" title="캐릭터 삭제">✕</button>`:''}</div>`}
+function tierOf(k,id){const t=T.boards[k].tiers.find(t=>t.items.includes(id));return t?[t.name,t.color]:['미배치','#d9d4e3']}
+function tTabs(){$('#ttabs').innerHTML=BOARDS.map(([k,l])=>`<button class="ttab ${k==tcur?'on':''}" data-ttab="${k}">${l}</button>`).join('')}
+function tListen(onChange){
+  const base=firebase.database().ref('scoreboard/tier');
+  base.child('chars').on('value',s=>{const a=[];s.forEach(c=>{const v=c.val()||{};a.push({id:c.key,name:v.name||'',img:v.img||''})});T.chars=a;onChange()});
+  base.child('boards').on('value',s=>{const v=s.val()||{};BOARDS.forEach(([k])=>T.boards[k]=normBoard(v[k]));onChange()});
+}
+
+/* ================= 티어표 (보기 전용) ================= */
+let tcur='sprint',tstarted=false;
+function tierInit(){
+  if(tstarted)return;
+  if(!isConfigured){alert('Firebase 설정이 되어있지 않아요.');return}
+  tstarted=true;tListen(tRender);
+}
+function tRender(){
+  const q=$('#tq').value.trim().toLowerCase(),hits=q?T.chars.filter(c=>c.name.toLowerCase().includes(q)):[],ids=new Set(hits.map(c=>c.id));
+  $('#tresult').innerHTML=!q?'<div class="thint">캐릭터 이름을 입력하면 거리별 티어를 한눈에 볼 수 있어요.</div>'
+   :!hits.length?`<div class="thint">'${escapeHtml(q)}'에 해당하는 캐릭터가 없어요.</div>`
+   :`<div class="tcards">${hits.map(c=>`<div class="tcard"><img src="${c.img}" alt=""><div><h3>${escapeHtml(c.name)}</h3><div class="tbadges">${BOARDS.map(([k,l])=>{const t=tierOf(k,c.id);return `<div class="tbadge"><span>${l}</span><b style="background:${t[1]}">${escapeHtml(t[0])}</b></div>`}).join('')}</div></div></div>`).join('')}</div>`;
+  tTabs();
+  const b=T.boards[tcur],ch=i=>tChip(i,q?ids.has(i):undefined,false);
+  $('#tboard').innerHTML=b.tiers.map(t=>`<div class="trow"><div class="tlabel" style="background:${t.color}">${escapeHtml(t.name)}</div><div class="tzone">${t.items.map(ch).join('')}</div></div>`).join('')
+   +(b.pool.length?`<div class="thead"><span>미배치 (${b.pool.length})</span></div><div class="trow"><div class="tzone">${b.pool.map(ch).join('')}</div></div>`:'');
+}
+function showView(v){
+  $('#viewScore').style.display=v=='score'?'':'none';$('#viewTier').style.display=v=='tier'?'':'none';
+  $('#navScore').classList.toggle('on',v=='score');$('#navTier').classList.toggle('on',v=='tier');
+  if(v=='tier'){tierInit();tRender()}
+}
+$('#navScore').onclick=()=>showView('score');$('#navTier').onclick=()=>showView('tier');
+$('#tq').oninput=tRender;
+document.addEventListener('click',e=>{const k=e.target.dataset&&e.target.dataset.ttab;if(k){tcur=k;tRender()}});
 
 initFirebase();
 </script>

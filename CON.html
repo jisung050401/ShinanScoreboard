@@ -243,6 +243,25 @@
   .chip.edit{background:#EFF1FB; color:#4B5AAE; padding:6px 7px;}
   .chip.edit:hover{background:var(--lavender);}
 
+  .pts-row{ width:100%; display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+  .chip.rk{background:#FFF1C4; color:#8A5A00;}
+  .chip.rk:hover{background:#FFE48A;}
+  .pts-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .pts-grid label{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:13px; color:var(--plum); background:#FBF8FF; border-radius:10px; padding:6px 10px; }
+  .pts-grid input{ width:64px; border:1.5px solid #EEE2FA; border-radius:8px; padding:5px; text-align:center; font-size:13px; outline:none; }
+  .stats-wrap{overflow-x:auto;background:var(--white);border-radius:16px;box-shadow:var(--shadow)}
+  .stats-table{border-collapse:collapse;width:100%;font-size:13px;color:var(--plum)}
+  .stats-table th,.stats-table td{padding:8px 10px;text-align:center;white-space:nowrap;border-bottom:1px solid #F1E7FB}
+  .stats-table th{font-family:'Jua',sans-serif;background:#FBF8FF;font-weight:400}
+  .stats-table th:first-child,.stats-table td:first-child{position:sticky;left:0;background:#fff;text-align:left;font-family:'Jua',sans-serif;z-index:1}
+  .stats-table th:first-child{background:#FBF8FF}
+  .stats-table td.num{cursor:pointer;font-family:'Gaegu',sans-serif;font-weight:700;font-size:16px}
+  .stats-table td.num.zero{color:#C7BBD9;font-weight:400}
+  .stats-table td.num:hover{background:#FFF9EC}
+  .stats-table tfoot td{font-weight:700;background:#FBF8FF}
+  .chip.sty{background:#EFF1FB; color:#4B5AAE;}
+  .chip.sty.on{background:var(--plum); color:#fff;}
+  .style-row{ width:100%; display:flex; gap:4px; justify-content:flex-end; margin-top:4px; }
   .rename-input{
     width:100%; max-width:180px; border:1.5px solid var(--pink-deep); border-radius:8px; padding:3px 8px;
     font-size:15px; font-family:'Jua', sans-serif; color:var(--plum); outline:none; background:#FFFDFB;
@@ -311,6 +330,35 @@
   .tbadge span{padding:2px 6px;background:#FBF8FF;color:var(--plum-soft)}
   .tbadge b{padding:2px 8px;color:#222;min-width:28px;text-align:center}
   .thint{color:var(--plum-soft);font-size:13px;padding:6px 2px}
+
+  .main-nav{flex-wrap:wrap}
+  .main-nav button{min-width:90px;font-size:14px}
+  .draw-res{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:10px 0}
+  .dseg{background:var(--white);border-radius:14px;box-shadow:var(--shadow);padding:10px;text-align:center}
+  .dseg small{display:block;font-size:11px;color:var(--plum-soft)}
+  .dseg b{font-family:'Jua',sans-serif;font-size:17px;color:var(--plum);font-weight:400}
+  .draw-res.big .dseg b{font-size:20px}
+  .dhist{padding:8px 12px;background:var(--white);border-radius:12px;margin-bottom:6px;font-size:13px;box-shadow:var(--shadow);color:var(--plum)}
+  .dhist span{color:var(--plum-soft);margin-right:8px;font-size:12px}
+
+  .tbox select{border:2px solid #F1E7FB;border-radius:10px;padding:8px 10px;font-size:13px;color:var(--plum);background:#FFFDFB}
+  .dgrp{font-size:12px;color:var(--plum-soft);margin-right:2px}
+  .dchip{border:none;border-radius:12px;padding:8px 14px;background:#F3EEFB;color:var(--plum-soft);font-family:'Jua',sans-serif;font-size:14px;cursor:pointer}
+  .dchip.on{background:var(--plum);color:#fff}
+  .tbtn.draw-go{padding:12px 20px;font-size:15px;background:linear-gradient(135deg,var(--pink-deep),var(--lavender-deep));color:#fff}
+  .venue{background:var(--white);border-radius:14px;box-shadow:var(--shadow);margin-bottom:8px;padding:0 12px}
+  .venue summary{cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 0;font-family:'Jua',sans-serif;color:var(--plum);list-style:none}
+  .venue summary::-webkit-details-marker{display:none}
+  .vdir{border:none;border-radius:8px;padding:3px 8px;font-size:12px;background:#EFF1FB;color:#4B5AAE;cursor:pointer}
+  .vcount{margin-left:auto;font-size:12px;color:var(--plum-soft);font-family:'Noto Sans KR',sans-serif}
+  .vsurf-title{font-family:'Jua',sans-serif;font-size:14px;margin:8px 0 2px;color:var(--plum)}
+  .vrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:5px 0;border-top:1px dashed #F1E7FB}
+  .vcat{width:88px;font-size:13px;color:var(--plum)}
+  .vcat small{display:block;color:#B5A9C8;font-size:10.5px}
+  .vchips{flex:1;display:flex;flex-wrap:wrap;gap:4px;min-width:80px}
+  .vchip{background:#F3EEFB;border-radius:8px;padding:2px 4px 2px 8px;font-size:12px;color:var(--plum)}
+  .vchip button{border:none;background:none;color:#B5A9C8;cursor:pointer}
+  .vin{width:84px;border:1.5px solid #EEE2FA;border-radius:8px;padding:5px;font-size:12px}
 </style>
 </head>
 <body>
@@ -328,7 +376,7 @@
   </div>
 
   <div class="wrap" id="wrap">
-    <div class="main-nav"><button id="navScore" class="on">🏇 점수 컨트롤</button><button id="navTier">📋 티어표 편집</button></div>
+    <div class="main-nav"><button id="navScore" class="on">🏇 점수 컨트롤</button><button id="navTier">📋 티어표 편집</button><button id="navStats">📊 통계</button><button id="navDraw">🎲 마장</button></div>
     <div id="viewScore">
     <div class="add-card">
       <input id="nameInput" type="text" placeholder="선수 이름을 입력하세요" maxlength="20">
@@ -345,6 +393,7 @@
       <span class="count" id="countLabel">참가자 0명</span>
       <span class="save-status" id="saveStatus"></span>
       <div class="toolbar-actions">
+        <button class="register-check-btn" id="ptsBtn">⚙️ 추가점수 설정</button>
         <button class="register-check-btn" id="registerCheckBtn">🏇 주자등록 확인</button>
         <button class="reset-btn" id="resetBtn">전체 점수 초기화</button>
       </div>
@@ -365,6 +414,19 @@
       <div class="order-note">📌 변경은 바로 저장되어 메인 사이트에 실시간 반영돼요. 초기화·가져오기는 주자등록 초기화와 같은 보안코드가 필요해요.</div>
       <div class="ttabs" id="ttabs"></div>
       <div id="tboard"></div>
+    </div>
+    <div id="viewStats" style="display:none">
+      <div class="tbox"><span class="thint" style="flex:1">티어·각질·등수 버튼을 누른 횟수가 자동으로 쌓여요. 숫자를 누르면 보안코드 확인 후 직접 고칠 수 있어요.</span><button class="tbtn danger" id="statsReset">통계 초기화</button></div>
+      <div class="stats-wrap"><table class="stats-table" id="statsTable"></table></div>
+    </div>
+    <div id="viewDraw" style="display:none">
+      <div class="tbox" id="drawFilters"></div>
+      <div class="tbox"><button class="tbtn draw-go" id="drawGo">🎲 마장 뽑기</button><span class="thint" id="drawInfo"></span></div>
+      <div id="drawResult"></div>
+      <div class="order-note">뽑은 결과는 자동으로 메인 사이트 "🎲 마장" 탭에 공유돼요. 아무것도 고르지 않으면 전체에서 뽑아요. 잔디·더트끼리, 거리끼리는 "또는", 두 묶음 사이는 "그리고"로 적용돼요.</div>
+      <div class="thead"><span>🏟 마장 관리</span></div>
+      <div class="tbox"><input type="text" id="vname" placeholder="경기장 이름"><select id="vdirsel"><option>우회전</option><option>좌회전</option></select><button class="tbtn" id="vadd">경기장 추가</button><button class="tbtn" id="vseed">기본 경기장 17개 등록</button></div>
+      <div id="venueList"></div>
     </div>
   </div>
 
@@ -396,6 +458,18 @@
         </div>
         <div class="modal-error" id="resetRegisterMsg"></div>
       </div>
+    </div>
+  </div>
+
+  <div id="ptsModal" class="modal-overlay">
+    <div class="modal-card wide">
+      <button class="modal-close" id="ptsClose">✕</button>
+      <div class="modal-title">⚙️ 추가점수 설정</div>
+      <div class="modal-desc">티어별·등수별 추가점수를 바꿔요. 저장하려면 보안코드가 필요해요.</div>
+      <div class="pts-grid" id="ptsGrid"></div>
+      <input type="password" id="ptsCode" class="modal-input" placeholder="보안코드" style="width:100%;margin-top:12px" inputmode="numeric" autocomplete="off">
+      <div class="modal-error" id="ptsMsg"></div>
+      <div style="display:flex;gap:8px"><button class="modal-btn small" id="ptsSave">저장</button><button class="modal-btn small" id="ptsDefault" style="background:#F3EEFB;color:#7A6690;box-shadow:none">기본값 채우기</button></div>
     </div>
   </div>
 
@@ -451,6 +525,37 @@ function setSaveStatus(state){
   }
 }
 
+const PT_DEFAULT = { t:[0,0.1,0.3,0.7,1], r:[7,4,2] };
+const PT_TIER_NAMES = ['0티어','1티어','2티어','3티어','4티어'], PT_RANK_NAMES = ['1등','2등','3등'];
+let PTS = { t:[...PT_DEFAULT.t], r:[...PT_DEFAULT.r] };
+function pointButtons(id){
+  return PT_TIER_NAMES.map((n,i) => `<button class="chip plus" title="+${PTS.t[i]}점" onclick="usePoint('${id}', 't${i}', ${PTS.t[i]})">${n}</button>`).join('')
+       + PT_RANK_NAMES.map((n,i) => `<button class="chip rk" title="+${PTS.r[i]}점" onclick="usePoint('${id}', 'r${i}', ${PTS.r[i]})">${n}</button>`).join('');
+}
+function ptsInit(){
+  if(!configRef) return;
+  configRef.child('points').on('value', (snap) => {
+    const v = snap.val() || {};
+    const num = (x, d) => (typeof x === 'number' && isFinite(x)) ? x : d;
+    PTS = { t: PT_DEFAULT.t.map((d,i) => num((v.t||[])[i], d)), r: PT_DEFAULT.r.map((d,i) => num((v.r||[])[i], d)) };
+    if(!isEditingName) render();
+  });
+}
+const RUN_STYLES = ['도주','선행','선입','추입'];
+function incStat(id, key){
+  if(!playersRef) return;
+  playersRef.child(id).child('stats').child(key).transaction((c) => (c || 0) + 1);
+}
+function usePoint(id, key, delta){ addScore(id, delta); incStat(id, key); }
+function setRunStyle(id, name){
+  const i = RUN_STYLES.indexOf(name);
+  if(i < 0 || !playersRef) return;
+  setSaveStatus('saving');
+  incStat(id, 's' + i);
+  playersRef.child(id).child('runStyle').set(name)
+    .then(() => setSaveStatus('saved'))
+    .catch((e) => { console.error(e); setSaveStatus('error'); });
+}
 function roundScore(n){ return Math.round(n * 10) / 10; }
 
 function initFirebase(){
@@ -467,10 +572,11 @@ function initFirebase(){
     const arr = [];
     snapshot.forEach((child) => {
       const v = child.val() || {};
-      arr.push({ id: child.key, name: v.name || '', score: typeof v.score === 'number' ? v.score : 0, runnerCode: v.runnerCode || '' });
+      arr.push({ id: child.key, name: v.name || '', score: typeof v.score === 'number' ? v.score : 0, runnerCode: v.runnerCode || '', runStyle: v.runStyle || '', stats: v.stats || {} });
     });
     players = arr;
     if(!isEditingName) render();
+    renderStats();
     if(document.getElementById('registerModal').style.display === 'flex') renderRegisterList();
   }, (err) => {
     console.error('동기화 오류', err);
@@ -588,16 +694,14 @@ function render(){
           <div class="lane-score"><b>${p.score}</b> 점</div>
         </div>
         <div class="lane-controls">
-          <button class="chip plus" onclick="addScore('${p.id}', 0.1)">+0.1</button>
-          <button class="chip plus" onclick="addScore('${p.id}', 0.3)">+0.3</button>
-          <button class="chip plus" onclick="addScore('${p.id}', 0.7)">+0.7</button>
-          <button class="chip plus" onclick="addScore('${p.id}', 1)">+1</button>
+          <div class="pts-row">${pointButtons(p.id)}</div>
           <form class="custom-form" onsubmit="return handleCustomAdd(event, '${p.id}')">
             <input type="number" step="0.1" placeholder="직접" />
             <button type="submit">추가</button>
           </form>
           <button class="chip edit" title="이름 변경" onclick="startRename('${p.id}')">✏️</button>
           <button class="del-btn" title="선수 삭제" onclick="confirmRemove('${p.id}', '${escapeHtml(p.name)}')">✕</button>
+          <div class="style-row">${RUN_STYLES.map(n => `<button class="chip sty ${p.runStyle === n ? 'on' : ''}" onclick="setRunStyle('${p.id}', '${n}')">${n}</button>`).join('')}</div>
         </div>
       </div>
     `;
@@ -816,6 +920,157 @@ function tListen(onChange){
   base.child('boards').on('value',s=>{const v=s.val()||{};BOARDS.forEach(([k])=>T.boards[k]=normBoard(v[k]));onChange()});
 }
 
+/* ================= 추가점수 설정 ================= */
+function ptsFill(vals){
+  $('#ptsGrid').innerHTML = [...PT_TIER_NAMES.map((n,i) => [n,'t'+i,vals.t[i]]), ...PT_RANK_NAMES.map((n,i) => [n,'r'+i,vals.r[i]])]
+    .map(([n,id,v]) => `<label>${n}<input type="number" step="0.1" min="0" id="pts_${id}" value="${v}"></label>`).join('');
+}
+$('#ptsBtn').onclick = () => { ptsFill(PTS); $('#ptsCode').value=''; $('#ptsMsg').textContent=''; $('#ptsModal').style.display='flex'; };
+$('#ptsClose').onclick = () => { $('#ptsModal').style.display='none'; };
+$('#ptsModal').addEventListener('click', (e) => { if(e.target.id === 'ptsModal') $('#ptsModal').style.display='none'; });
+$('#ptsDefault').onclick = () => ptsFill(PT_DEFAULT);
+$('#ptsSave').onclick = async () => {
+  const msg = $('#ptsMsg'); msg.className = 'modal-error';
+  const read = (id) => Math.round(parseFloat($('#pts_'+id).value) * 10) / 10;
+  const t = PT_TIER_NAMES.map((n,i) => read('t'+i)), r = PT_RANK_NAMES.map((n,i) => read('r'+i));
+  if([...t, ...r].some(x => isNaN(x) || x < 0)){ msg.textContent = '0 이상의 숫자만 입력해주세요.'; return; }
+  const code = $('#ptsCode').value.trim();
+  if(!code){ msg.textContent = '보안코드를 입력해주세요.'; return; }
+  if(!configRef){ msg.textContent = '연결 오류가 발생했어요.'; return; }
+  try{
+    const snap = await configRef.child('securityCode').once('value');
+    if(code !== (snap.val() || '0000')){ msg.textContent = '보안코드가 올바르지 않아요.'; return; }
+    await configRef.child('points').set({ t, r });
+    msg.textContent = '추가점수가 저장되었어요.'; msg.className = 'modal-error success';
+    $('#ptsCode').value = '';
+  }catch(e){ console.error(e); msg.textContent = '저장 실패. 다시 시도해주세요.'; }
+};
+
+
+/* ================= 마장 뽑기 공통 ================= */
+const D_ICON={'봄':'🌸','여름':'🌻','가을':'🍂','겨울':'⛄','맑음':'☀️','흐림':'☁️','비':'🌧️','눈':'❄️'};
+const dIcon=w=>D_ICON[w]||D_ICON[String(w).split('(')[0]]||'';
+const drawLine=r=>[r.venue,r.surface,r.dist+'M',r.dir,r.season,r.weather].join(' / ');
+const dTime=ts=>ts?new Date(ts).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+function drawHTML(r,big){
+  const seg=[['경기장',r.venue],['코스',r.surface],['거리',r.dist+'M'],['방향',r.dir],['계절',dIcon(r.season)+' '+r.season],['날씨',dIcon(r.weather)+' '+r.weather]];
+  return `<div class="draw-res ${big?'big':''}">${seg.map(([l,v])=>`<div class="dseg"><small>${l}</small><b>${escapeHtml(String(v))}</b></div>`).join('')}</div>`;
+}
+
+/* ================= 마장 뽑기 + 마장 관리 ================= */
+const SURF=[['turf','잔디'],['dirt','더트']];
+const CATS=[['sprint','단거리',1000,1600],['mile','마일',1600,2000],['medium','중거리',2000,2500],['long','장거리',2500,10000]];
+const SEASONS=['봄','여름','가을','겨울'];
+const WEATHERS=['맑음(양호)','맑음(다습)','흐림(양호)','흐림(다습)','흐림(포화)','비(포화)','비(불량)','눈(다습)','눈(포화)'];
+const DEF_VENUES=[['삿포로','우회전'],['하코다테','우회전'],['니이가타','좌회전'],['후쿠시마','우회전'],['나카야마','우회전'],['도쿄','좌회전'],['츄쿄','우회전'],['교토','우회전'],['한신','우회전'],['코쿠라','우회전'],['오이','우회전'],['가와사키','좌회전'],['후나바시','좌회전'],['모리오카','좌회전'],['롱샹','우회전'],['산타 아니타 팍','좌회전'],['델마','좌회전']];
+let V=[],openV=new Set(),dSel=new Set(),dCur=null;
+const vRef=()=>firebase.database().ref('scoreboard/venues'),dRef=()=>firebase.database().ref('scoreboard/draw');
+function drawInit(){
+  if(!isConfigured)return;
+  vRef().on('value',s=>{const a=[];s.forEach(c=>{const v=c.val()||{},courses={};
+    SURF.forEach(([sk])=>{courses[sk]={};CATS.forEach(([ck])=>{const o=(((v.courses||{})[sk])||{})[ck]||{};courses[sk][ck]=Object.entries(o).map(([key,d])=>({key,d:Number(d)})).filter(x=>x.d).sort((a,b)=>a.d-b.d)})});
+    a.push({id:c.key,name:v.name||'',dir:v.dir||'우회전',courses})});V=a;renderVenues();drawInfo()});
+  dRef().child('current').on('value',s=>{dCur=s.val();renderDraw()});
+}
+function renderFilters(){
+  $('#drawFilters').innerHTML=`<span class="dgrp">코스</span>${SURF.map(([k,n])=>`<button class="dchip ${dSel.has(k)?'on':''}" data-df="${k}">${n}</button>`).join('')}<span class="dgrp" style="margin-left:8px">거리</span>${CATS.map(([k,n])=>`<button class="dchip ${dSel.has(k)?'on':''}" data-df="${k}">${n}</button>`).join('')}`;
+}
+function eligible(){
+  const ss=SURF.map(x=>x[0]).filter(k=>dSel.has(k)),cs=CATS.map(x=>x[0]).filter(k=>dSel.has(k)),out=[];
+  V.forEach(v=>SURF.forEach(([sk,sn])=>{if(ss.length&&!ss.includes(sk))return;CATS.forEach(([ck])=>{if(cs.length&&!cs.includes(ck))return;v.courses[sk][ck].forEach(x=>out.push({venue:v.name,surface:sn,dist:x.d,dir:v.dir}))})}));
+  return out;
+}
+function drawInfo(){const el=$('#drawInfo');if(el)el.textContent=(dSel.size?'조건에 맞는 마장 ':'등록된 전체 마장 ')+eligible().length+'개'}
+function pickWeather(season){
+  const snow=['눈(다습)','눈(포화)'],clear=['맑음(양호)','맑음(다습)'],table=[];
+  if(season=='겨울'){snow.forEach(w=>table.push([w,35]));const o=WEATHERS.filter(w=>!snow.includes(w));o.forEach(w=>table.push([w,30/o.length]))}
+  else{clear.forEach(w=>table.push([w,25]));const o=WEATHERS.filter(w=>!snow.includes(w)&&!clear.includes(w));o.forEach(w=>table.push([w,50/o.length]))}
+  let x=Math.random()*100;for(const [w,p] of table){if((x-=p)<0)return w}return table[table.length-1][0];
+}
+function renderDraw(){$('#drawResult').innerHTML=dCur?drawHTML(dCur,true)+`<div class="thint" style="text-align:center">${dTime(dCur.ts)} 뽑음 · 메인에 공유됨</div>`:'<div class="thint" style="text-align:center">아직 뽑은 마장이 없어요. 조건을 고르고 뽑아보세요.</div>'}
+$('#drawGo').onclick=()=>{
+  if(!isConfigured)return;
+  const pool=eligible();if(!pool.length)return alert(V.length?'조건에 맞는 마장이 없어요. 아래 마장 관리에서 마장을 추가해 주세요.':'등록된 마장이 없어요. 아래에서 경기장을 등록해 주세요.');
+  const c=pool[Math.floor(Math.random()*pool.length)],season=SEASONS[Math.floor(Math.random()*4)];
+  const r={venue:c.venue,surface:c.surface,dist:c.dist,dir:c.dir,season,weather:pickWeather(season),ts:Date.now()};
+  tWrite(dRef().child('current').set(r).then(()=>dRef().child('history').push(r)));
+};
+/* 마장 관리 */
+const rangeTxt=([k,n,lo,hi])=>hi>=10000?lo+'M~':lo+'~'+(hi-1)+'M';
+function renderVenues(){
+  const el=$('#venueList');if(!el)return;
+  if(!V.length){el.innerHTML='<div class="thint">등록된 경기장이 없어요. "기본 경기장 17개 등록"을 눌러 시작하세요.</div>';return}
+  el.innerHTML=V.map(v=>{
+    const n=SURF.reduce((a,[sk])=>a+CATS.reduce((b,[ck])=>b+v.courses[sk][ck].length,0),0);
+    return `<details class="venue" data-vid="${v.id}" ${openV.has(v.id)?'open':''}><summary><span>${escapeHtml(v.name)}</span><button class="vdir" data-vdir="${v.id}" title="눌러서 방향 변경">${v.dir}</button><span class="vcount">마장 ${n}개</span><button class="del-btn" data-vdel="${v.id}" title="경기장 삭제">✕</button></summary>
+    ${SURF.map(([sk,sn])=>`<div class="vsurf-title">${sn}</div>${CATS.map(cat=>`<div class="vrow"><div class="vcat">${cat[1]}<small>${rangeTxt(cat)}</small></div><div class="vchips">${v.courses[sk][cat[0]].map(x=>`<span class="vchip">${x.d}M<button data-cdel="${v.id}|${sk}|${cat[0]}|${x.key}" title="삭제">✕</button></span>`).join('')}</div><input type="number" class="vin" placeholder="거리" data-vid="${v.id}" data-s="${sk}" data-c="${cat[0]}"><button class="tbtn" data-cadd="1">추가</button></div>`).join('')}`).join('')}</details>`;
+  }).join('');
+}
+function addCourse(input){
+  const v=V.find(x=>x.id==input.dataset.vid),cat=CATS.find(c=>c[0]==input.dataset.c),sk=input.dataset.s,d=Number(input.value);
+  if(!v||!cat||input.value.trim()==='')return;
+  if(!Number.isInteger(d)||d<cat[2]||d>=cat[3])return alert(cat[1]+'은(는) '+cat[2]+'~'+(cat[3]-1)+'M 사이의 정수로 입력해 주세요.');
+  if(v.courses[sk][cat[0]].some(x=>x.d==d))return alert('이미 등록된 마장이에요.');
+  input.value='';openV.add(v.id);
+  tWrite(vRef().child(v.id+'/courses/'+sk+'/'+cat[0]).push(d));
+}
+$('#vadd').onclick=()=>{
+  const name=$('#vname').value.trim();if(!name||!isConfigured)return;
+  if(V.some(v=>v.name==name))return alert('이미 있는 경기장이에요.');
+  $('#vname').value='';tWrite(vRef().push({name,dir:$('#vdirsel').value}));
+};
+$('#vseed').onclick=()=>{
+  if(!isConfigured)return;const have=new Set(V.map(v=>v.name)),u={};
+  DEF_VENUES.forEach(([n,d])=>{if(!have.has(n))u[vRef().push().key]={name:n,dir:d}});
+  if(!Object.keys(u).length)return alert('기본 경기장이 이미 모두 등록되어 있어요.');
+  tWrite(vRef().update(u));
+};
+document.addEventListener('click',e=>{
+  const t=e.target,d=t.dataset||{};
+  if(d.df){dSel.has(d.df)?dSel.delete(d.df):dSel.add(d.df);renderFilters();drawInfo()}
+  else if(d.vdir){const v=V.find(x=>x.id==d.vdir);if(v)tWrite(vRef().child(v.id+'/dir').set(v.dir=='우회전'?'좌회전':'우회전'))}
+  else if(d.vdel){const v=V.find(x=>x.id==d.vdel);if(v&&confirm(v.name+' 경기장과 등록된 마장을 모두 삭제할까요?'))tWrite(vRef().child(v.id).remove())}
+  else if(d.cdel){const [vid,sk,ck,key]=d.cdel.split('|');openV.add(vid);tWrite(vRef().child(vid+'/courses/'+sk+'/'+ck+'/'+key).remove())}
+  else if(d.cadd){addCourse(t.previousElementSibling)}
+});
+document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.classList&&e.target.classList.contains('vin')){e.preventDefault();addCourse(e.target)}});
+document.addEventListener('toggle',e=>{const x=e.target;if(x.classList&&x.classList.contains('venue')){x.open?openV.add(x.dataset.vid):openV.delete(x.dataset.vid)}},true);
+renderFilters();renderDraw();
+
+/* ================= 통계 ================= */
+const statNum = (p, k) => Math.max(0, Math.floor(Number((p.stats || {})[k]) || 0));
+function renderStats(){
+  const tb = $('#statsTable'); if(!tb) return;
+  if(players.length === 0){ tb.innerHTML = '<tbody><tr><td style="text-align:center;padding:30px">등록된 선수가 없어요</td></tr></tbody>'; return; }
+  const T_ = PT_TIER_NAMES.map((n,i) => ['t'+i, n]), S_ = RUN_STYLES.map((n,i) => ['s'+i, n]), R_ = PT_RANK_NAMES.map((n,i) => ['r'+i, n]);
+  const cell = (p, [k]) => { const v = statNum(p, k); return `<td class="num ${v ? '' : 'zero'}" data-pid="${p.id}" data-k="${k}" title="눌러서 수정">${v}</td>`; };
+  const fav = (p) => { const m = Math.max(...S_.map(([k]) => statNum(p, k))); return m ? S_.filter(([k]) => statNum(p, k) === m).map(x => x[1]).join('·') : '—'; };
+  const head2 = [...T_, ...S_].map(x => `<th>${x[1]}</th>`).join('') + R_.map(x => `<th>${x[1]}</th>`).join('');
+  tb.innerHTML = `<thead><tr><th rowspan="2">유저</th><th colspan="5">티어 사용</th><th colspan="4">각질 사용</th><th rowspan="2">최다 각질</th><th colspan="3">등수</th></tr><tr>${head2}</tr></thead>
+    <tbody>${players.map(p => `<tr><td>${escapeHtml(p.name)}</td>${[...T_, ...S_].map(c => cell(p, c)).join('')}<td>${fav(p)}</td>${R_.map(c => cell(p, c)).join('')}</tr>`).join('')}</tbody>
+    <tfoot><tr><td>합계</td>${[...T_, ...S_].map(([k]) => `<td>${players.reduce((a, p) => a + statNum(p, k), 0)}</td>`).join('')}<td></td>${R_.map(([k]) => `<td>${players.reduce((a, p) => a + statNum(p, k), 0)}</td>`).join('')}</tr></tfoot>`;
+}
+document.addEventListener('click', async (e) => {
+  const td = e.target.closest && e.target.closest('td.num'); if(!td || !playersRef) return;
+  const p = players.find(x => x.id === td.dataset.pid); if(!p) return;
+  if(!(await checkCode())) return;
+  const v = prompt(`${p.name} · 새 횟수를 입력하세요 (0 이상의 정수)`, statNum(p, td.dataset.k));
+  if(v === null) return;
+  const n = Math.floor(Number(v));
+  if(v.trim() === '' || isNaN(n) || n < 0) return alert('0 이상의 정수만 입력해주세요.');
+  setSaveStatus('saving');
+  playersRef.child(p.id).child('stats').child(td.dataset.k).set(n || null)
+    .then(() => setSaveStatus('saved')).catch(() => setSaveStatus('error'));
+});
+$('#statsReset').onclick = async () => {
+  if(!playersRef || players.length === 0) return alert('초기화할 통계가 없어요.');
+  if(!(await checkCode())) return;
+  if(!confirm('모든 유저의 통계(티어·각질·등수 횟수)를 0으로 초기화할까요?\n점수는 바뀌지 않아요. 되돌릴 수 없어요.')) return;
+  const u = {}; players.forEach(p => { u[p.id + '/stats'] = null; });
+  setSaveStatus('saving');
+  playersRef.update(u).then(() => setSaveStatus('saved')).catch(() => setSaveStatus('error'));
+};
+
 /* ================= 티어표 편집 (Firebase 실시간 저장) ================= */
 let tcur='sprint',tpq='',mvT=null,drag=null,ay=null,timer=null;
 const tBase=()=>firebase.database().ref('scoreboard/tier'),TB=()=>T.boards[tcur];
@@ -830,11 +1085,12 @@ function tRender(){
 }
 function tierInit(){if(isConfigured)tListen(()=>{if(!drag)tRender()})}
 function showView(v){
-  $('#viewScore').style.display=v=='score'?'':'none';$('#viewTier').style.display=v=='tier'?'':'none';
-  $('#navScore').classList.toggle('on',v=='score');$('#navTier').classList.toggle('on',v=='tier');
-  $('#wrap').classList.toggle('wide',v=='tier');if(v=='tier')tRender();
+  [['score','Score'],['tier','Tier'],['stats','Stats'],['draw','Draw']].forEach(([k,n])=>{
+    $('#view'+n).style.display=v==k?'':'none';$('#nav'+n).classList.toggle('on',v==k);
+  });
+  $('#wrap').classList.toggle('wide',v!='score');if(v=='tier')tRender();if(v=='stats')renderStats();
 }
-$('#navScore').onclick=()=>showView('score');$('#navTier').onclick=()=>showView('tier');
+$('#navScore').onclick=()=>showView('score');$('#navTier').onclick=()=>showView('tier');$('#navStats').onclick=()=>showView('stats');$('#navDraw').onclick=()=>showView('draw');
 /* 보안코드 확인 (주자등록 초기화와 같은 코드) */
 function askCode(msg){return new Promise(res=>{const m=$('#codeModal'),i=$('#codeInput');$('#codeMsg').textContent=msg;i.value='';m.style.display='flex';i.focus();
   const done=v=>{m.style.display='none';$('#codeOk').onclick=$('#codeCancel').onclick=i.onkeydown=null;res(v)};
@@ -906,6 +1162,8 @@ document.addEventListener('dragend',()=>{drag=null;stopScroll();document.querySe
 
 initFirebase();
 tierInit();
+ptsInit();
+drawInit();
 </script>
 
 </body>

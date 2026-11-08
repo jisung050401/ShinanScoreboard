@@ -399,6 +399,9 @@
   .ach-crow{display:flex;gap:6px;align-items:center;margin:4px 0;flex-wrap:wrap}
   .ach-crow input[type=number]{width:80px}
   .ach-crow label{font-size:13px;color:var(--plum)}
+  .ach-cats{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 8px}
+  .ach-cat{border:none;border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--white);color:var(--plum-soft);box-shadow:var(--shadow);font-family:'Noto Sans KR',sans-serif}
+  .ach-cat.on{background:var(--plum);color:#fff}
 </style>
 </head>
 <body>
@@ -481,10 +484,13 @@
           <div id="achConds"></div>
           <button class="tbtn" id="achAddCond" type="button">+ 조건 추가</button>
         </div>
-        <div id="achOptWrap" class="ach-crow" style="display:none;gap:16px"><label><input type="checkbox" id="achFirst"> 최초 달성자 1명만</label><label><input type="checkbox" id="achHide"> 달성자가 나오기 전까지 조건 비공개</label></div>
+        <div id="achOptWrap" class="ach-crow" style="display:none;gap:16px"><label><input type="checkbox" id="achFirst"> <span id="achFirstTxt">최초 달성자 1명만</span></label><label id="achHideLbl"><input type="checkbox" id="achHide"> 달성자가 나오기 전까지 조건 비공개</label></div>
         <div class="ach-crow"><button class="tbtn draw-go" id="achSave" type="button">업적 추가</button><button class="tbtn" id="achCancel" type="button" style="display:none">수정 취소</button></div>
       </div>
       <div class="order-note">📌 일반·희귀는 모든 플레이어가 달성할 수 있어요. 영웅·전설은 "최초 1명만", "조건 비공개", "직접 수여"를 쓸 수 있어요. 한 번 달성한 업적은 통계가 나중에 바뀌어도 유지돼요. 이 화면이 열려 있는 동안 통계가 바뀔 때마다 자동으로 달성 여부를 확인해요.</div>
+      <div class="tbox"><input type="search" id="achQ" placeholder="🔍 업적 검색 (제목·설명·조건)" style="flex:1;min-width:140px;border:2px solid #F1E7FB;border-radius:12px;padding:9px 12px;font-size:14px;font-family:inherit;color:var(--plum);background:#FFFDFB;outline:none"></div>
+      <div class="ach-cats" id="achCats"></div>
+      <div class="thint" id="achCount"></div>
       <div id="achList"></div>
     </div>
     <div id="viewSched" style="display:none">
@@ -1302,6 +1308,16 @@ function achStat(p,k){
 const achCmp=(a,op,b)=>op=='>='?a>=b:op=='>'?a>b:a==b;
 const achCondTxt=a=>a.conds.map(c=>`${c.label} ${ACH_OPL[c.op]||'≥'} ${c.v}`).join(' · ')+(a.conds.length>1?' (모두 만족)':'');
 
+/* 조건 변수별 분류 검색 */
+const ACH_CATS=[...PT_TIER_NAMES.map((n,i)=>['t'+i,n,['t'+i]]),...RUN_STYLES.map((n,i)=>['s'+i,n,['s'+i]]),...PT_RANK_NAMES.map((n,i)=>['r'+i,n,['r'+i]]),
+  ['att','출석',['att']],['win','연승',['cw','bw']],['lose','연패',['cl','bl']],['sum','합계',['tsum','ssum','rsum']],['manual','🎁 직접 수여',[]]];
+let aqCats=new Set();
+function achMatch(a,text,cats){
+  const ck=a.conds.map(c=>c.k);
+  if(text&&!(a.title+' '+a.desc+' '+(a.manual?'직접 수여':achCondTxt(a))).toLowerCase().includes(text))return false;
+  if(cats.size)return ACH_CATS.some(([id,,keys])=>cats.has(id)&&(id=='manual'?a.manual:keys.some(k=>ck.includes(k))));
+  return true;
+}
 let AR={},AG={},ACOND={},A=[],aEdit=null,aTimer=null,aCondRows=[{k:'att',op:'>=',v:''}];
 const aBusy=new Set(),aBase=()=>firebase.database().ref('scoreboard');
 function achListen(){
@@ -1351,7 +1367,9 @@ function achFormSync(){
   if(!hl)$('#achMode').value='stat';
   const manual=$('#achMode').value=='manual';
   $('#achCondWrap').style.display=manual?'none':'';
-  $('#achOptWrap').style.display=hl&&!manual?'flex':'none';
+  $('#achOptWrap').style.display=hl?'flex':'none';
+  $('#achHideLbl').style.display=manual?'none':'';
+  $('#achFirstTxt').textContent=manual?'1명에게만 수여 (이미 받은 사람이 있으면 수여 불가)':'최초 달성자 1명만';
 }
 function achCondRows(){
   $('#achConds').innerHTML=aCondRows.map((r,i)=>`<div class="ach-crow"><select data-ci="${i}" data-f="k">${achStatList().map(([k,n])=>`<option value="${k}" ${k==r.k?'selected':''}>${n}</option>`).join('')}</select><select data-ci="${i}" data-f="op"><option value=">=" ${r.op=='>='?'selected':''}>≥ (이상)</option><option value=">" ${r.op=='>'?'selected':''}>&gt; (초과)</option><option value="=" ${r.op=='='?'selected':''}>= (같음)</option></select><input type="number" min="0" step="1" data-ci="${i}" data-f="v" value="${r.v}" placeholder="횟수">${aCondRows.length>1?`<button class="tbtn danger" data-cdel="${i}" type="button">✕</button>`:''}</div>`).join('');
@@ -1385,7 +1403,7 @@ $('#achSave').onclick=()=>{
   }
   const old=aEdit?A.find(x=>x.id==aEdit):null;
   const id=aEdit||aBase().child('achievements').push().key,upd={};
-  upd['achievements/'+id]={title,desc,rarity,manual,firstOnly:hl&&!manual&&$('#achFirst').checked,hidden:hl&&!manual&&$('#achHide').checked,ts:old?old.ts:Date.now()};
+  upd['achievements/'+id]={title,desc,rarity,manual,firstOnly:hl&&$('#achFirst').checked,hidden:hl&&!manual&&$('#achHide').checked,ts:old?old.ts:Date.now()};
   upd['achCond/'+id]=manual?null:conds;
   tWrite(aBase().update(upd));
   achFormReset();
@@ -1403,14 +1421,17 @@ function achEditStart(id){
 function achRender(){
   const el=$('#achList');if(!el)return;
   const keep={};el.querySelectorAll('select[data-asel]').forEach(s=>{keep[s.dataset.asel]=s.value});
-  if(!A.length){el.innerHTML='<div class="thint">아직 만든 업적이 없어요. 위에서 첫 업적을 만들어 보세요.</div>';return}
-  const total=players.length;
-  el.innerHTML=A.map(a=>{
+  $('#achCats').innerHTML=ACH_CATS.map(([id,n])=>`<button class="ach-cat ${aqCats.has(id)?'on':''}" data-acat="${id}" type="button">${n}</button>`).join('');
+  if(!A.length){el.innerHTML='<div class="thint">아직 만든 업적이 없어요. 위에서 첫 업적을 만들어 보세요.</div>';$('#achCount').textContent='';return}
+  const total=players.length,qt=$('#achQ').value.trim().toLowerCase(),shown=A.filter(a=>achMatch(a,qt,aqCats));
+  $('#achCount').textContent=(qt||aqCats.size)?`검색 결과 ${shown.length}개 / 전체 ${A.length}개`:'';
+  if(!shown.length){el.innerHTML='<div class="thint">조건에 맞는 업적이 없어요.</div>';return}
+  el.innerHTML=shown.map(a=>{
     const r=achR(a.rarity),hs=achHolders(a),pct=total?Math.round(hs.length/total*100):0;
-    const tags=(a.firstOnly?'<span class="ach-tag">👑 최초 1인</span>':'')+(a.hidden?'<span class="ach-tag">🔒 조건 비공개</span>':'')+(a.manual?'<span class="ach-tag">🎁 직접 수여</span>':'');
+    const tags=(a.firstOnly?`<span class="ach-tag">👑 ${a.manual?'1인 한정':'최초 1인'}</span>`:'')+(a.hidden?'<span class="ach-tag">🔒 조건 비공개</span>':'')+(a.manual?'<span class="ach-tag">🎁 직접 수여</span>':'');
     const cond=a.manual?'🎁 운영자가 직접 수여하는 업적이에요':'조건: '+escapeHtml(achCondTxt(a));
     const chips=hs.map(h=>`<span class="ach-chip">${escapeHtml(h.name)}${h.manual?`<button data-arevoke="${a.id}|${h.pid}" title="수여 취소">✕</button>`:''}</span>`).join('')||'<span class="thint">아직 달성자가 없어요</span>';
-    const give=a.manual?`<div class="ach-crow"><select data-asel="${a.id}">${players.filter(p=>!hs.some(h=>h.pid==p.id)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select><button class="tbtn" data-agive="${a.id}" type="button">🎁 수여</button></div>`:'';
+    const give=a.manual&&a.firstOnly&&hs.length?'<div class="ach-cond">1인 한정 업적이라 이미 수여했어요. 다시 주려면 ✕로 수여를 취소하세요.</div>':a.manual?`<div class="ach-crow"><select data-asel="${a.id}">${players.filter(p=>!hs.some(h=>h.pid==p.id)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select><button class="tbtn" data-agive="${a.id}" type="button">🎁 수여</button></div>`:'';
     return `<div class="ach-card" style="--rc:${r[2]}"><div class="ach-top"><span class="ach-rar">${r[1]}</span><span>${escapeHtml(a.title)}</span>${tags}</div>
       ${a.desc?`<div class="ach-desc">${escapeHtml(a.desc)}</div>`:''}<div class="ach-cond">${cond}</div>
       <div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성 ${hs.length}/${total}명 (${pct}%)</div>
@@ -1419,11 +1440,18 @@ function achRender(){
   }).join('');
   el.querySelectorAll('select[data-asel]').forEach(s=>{if(keep[s.dataset.asel]&&[...s.options].some(o=>o.value==keep[s.dataset.asel]))s.value=keep[s.dataset.asel]});
 }
+$('#achQ').oninput=achRender;
+$('#achCats').addEventListener('click',e=>{const id=e.target.dataset.acat;if(!id)return;aqCats.has(id)?aqCats.delete(id):aqCats.add(id);achRender()});
 $('#achList').addEventListener('click',async e=>{
   const d=e.target.dataset;if(!d||!isConfigured)return;
   if(d.aedit)return achEditStart(d.aedit);
   if(d.agive){
     const sel=$('#achList').querySelector(`select[data-asel="${d.agive}"]`);if(!sel||!sel.value)return alert('수여할 선수가 없어요.');
+    const a=A.find(x=>x.id==d.agive);
+    if(a&&a.firstOnly){ // 1인 한정: 남아있는 수여자가 없을 때만, 오래된 기록은 덮어써요
+      if(achHolders(a).length)return alert('이미 수여받은 사람이 있어요. 수여를 취소한 뒤 다시 수여해 주세요.');
+      return void tWrite(aBase().child('achGrants/'+a.id).set({[sel.value]:{ts:Date.now(),manual:true}}));
+    }
     return void tWrite(aBase().child('achGrants/'+d.agive+'/'+sel.value).set({ts:Date.now(),manual:true}));
   }
   if(d.arevoke){

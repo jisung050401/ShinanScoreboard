@@ -1435,7 +1435,7 @@ function achRender(){
     const give=a.manual&&a.firstOnly&&hs.length?'<div class="ach-cond">1인 한정 업적이라 이미 수여했어요. 다시 주려면 ✕로 수여를 취소하세요.</div>':a.manual?`<div class="ach-crow"><select data-asel="${a.id}">${players.filter(p=>!hs.some(h=>h.pid==p.id)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select><button class="tbtn" data-agive="${a.id}" type="button">🎁 수여</button></div>`:'';
     return `<div class="ach-card" style="--rc:${r[2]}"><div class="ach-top"><span class="ach-rar">${r[1]}</span><span>${escapeHtml(a.title)}</span>${tags}</div>
       ${a.desc?`<div class="ach-desc">${escapeHtml(a.desc)}</div>`:''}<div class="ach-cond">${cond}</div>
-      <div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성 ${hs.length}/${total}명 (${pct}%)</div>
+      ${a.firstOnly?'':`<div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성 ${hs.length}/${total}명 (${pct}%)</div>`}
       <div class="ach-who">${chips}</div>${give}
       <div class="ach-crow" style="margin-top:8px"><button class="tbtn" data-aedit="${a.id}" type="button">수정</button><button class="tbtn danger" data-areset="${a.id}" type="button">달성 기록 초기화</button><button class="tbtn danger" data-adel="${a.id}" type="button">삭제</button></div></div>`;
   }).join('');

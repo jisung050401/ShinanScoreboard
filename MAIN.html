@@ -789,7 +789,7 @@ function achRenderMain(){
     const who=open?`<div class="ach-who">${a.hs.length?a.hs.map(h=>`<span class="ach-chip ${q&&h.name.toLowerCase().includes(q)?'hit':''}">${escapeHtml(h.name)}<small>${dTime(h.ts)}</small></span>`).join(''):'<span class="thint">아직 달성한 유저가 없어요</span>'}</div>`:'';
     return `<div class="ach-card ${mine?'got':''}" style="--rc:${r[2]}"><div class="ach-top"><span class="ach-rar">${r[1]}</span><span>${escapeHtml(a.title)}</span>${tags}${mine?'<span class="ach-tag" style="background:var(--gold);color:var(--plum)">✓ 달성</span>':''}</div>
       ${a.desc?`<div class="ach-desc">${escapeHtml(a.desc)}</div>`:''}<div class="ach-cond">${cond}</div>${first}
-      <div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성률 <b>${pct}%</b> (${a.hs.length}/${total}명)</div>
+      ${a.firstOnly?'':`<div class="ach-bar"><i style="width:${pct}%"></i></div><div class="ach-cond">달성률 <b>${pct}%</b> (${a.hs.length}/${total}명)</div>`}
       <button class="ach-more" data-adet="${a.id}">${open?'접기 ▲':'자세히보기 ▼'}</button>${who}</div>`;
   }).join('');
 }
